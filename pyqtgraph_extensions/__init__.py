@@ -1,0 +1,281 @@
+"""Extensions and improvements to pyqtgraph.
+"""
+import pyqtgraph as pg
+from pyqtgraph import QtGui,QtCore
+import os
+import pyqtgraph.exporters as pgex
+from scipy.interpolate import interp1d
+from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
+import numpy as np
+import subprocess
+import os_ex
+
+from .AxisItem import *
+from .misc import *
+from .AlignedPlotItem import *
+from .GraphicsLayout import *
+
+for v in ('DashLine','DashDotLine','DashDotDotLine','DotLine'):
+    vars()[v]=getattr(QtCore.Qt,v)
+
+# Switch to using white background and black foreground
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
+
+# Ubuntu font has rubbish Greek letters
+#print(QtGui.QApplication.font().family())
+if QtGui.QApplication.font().family()=='Ubuntu':
+    QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+# Tableau discrete color schemes
+# https://github.com/jiffyclub/palettable/blob/master/palettable/tableau/tableau.py
+# http://www.randalolson.com/2014/06/28/how-to-make-beautiful-data-visualizations-in-python-with-matplotlib/
+tableau10=[ ( 31, 119, 180),
+            (255, 127,  14),
+            ( 44, 160,  44),
+            (214,  39,  40),
+            (148, 103, 189),
+            (140,  86,  75),
+            (227, 119, 194),
+            (127, 127, 127),
+            (188, 189,  34),
+            ( 23, 190, 207)]
+tableau20=[ (31, 119, 180),
+            (174, 199, 232),
+            (255, 127, 14),
+            (255, 187, 120),    
+            (44, 160, 44), 
+            (152, 223, 138),
+            (214, 39, 40),
+            (255, 152, 150),    
+            (148, 103, 189), 
+            (197, 176, 213), 
+            (140, 86, 75),
+            (196, 156, 148),    
+            (227, 119, 194),
+            (247, 182, 210), 
+            (127, 127, 127), 
+            (199, 199, 199),    
+            (188, 189, 34), 
+            (219, 219, 141), 
+            (23, 190, 207),
+            (158, 218, 229)] 
+
+def get_colormap_lut(name='flame'):
+    """Get lookup table from one of pyqtgraph's gradient editor's presets.
+    
+    Result is suitable for ImageItem.setLookupTable. Gradient names listed in
+    Gradients.keys(). Not sure how 'hsv' mode works.
+    """
+    gradient=Gradients[name]
+    ticks=gradient['ticks']
+    v=np.array([tick[0] for tick in ticks])
+    c=np.array([tick[1] for tick in ticks])
+    #print v.shape,c.shape
+    n=256.
+    vu=np.arange(n)/n
+    return interp1d(v,c,axis=0)(vu)
+    
+def add_right_axis(plti,pen=None,label=None):
+    """Add right-hand axis to pg.PlotItem.
+    Following examples/MultiplePlotAxes. Returns a pyqtgraph_ex.ViewBox which is
+    just a normal pyqtgraph.ViewBox with convenience plotting functions.
+    Known limitation: vertical panning only moves original axis, not added one.
+    Function is thus best suited for static plots rather than GUIs.
+    
+    Implementation: the viewbox is added to the plti's scene. This means that if
+    plti is managed by a layout, then calling clear() on the layout will not
+    remove plti from the scene (since the layout doesn't know about it).
+    pyqtgraph_extensions.GraphicsLayoutWidget.clear() fixes this.
+    """
+    if isinstance(plti,pg.PlotWidget):
+        plti=plti.plotItem
+    vb=ViewBox()
+    plti.showAxis('right')
+    #vb.setParentItem(plti) - no, mucks up coordinate system
+    plti.scene().addItem(vb)
+    axis=plti.getAxis('right')
+    axis.setStyle(showValues=True)
+    axis.linkToView(vb)
+    if pen is not None:
+        axis.setPen(pen)
+    if label is not None:
+        axis.setLabel(label)
+    vb.setXLink(plti.vb)    
+    def updateViews():
+        vb.setGeometry(plti.vb.sceneBoundingRect())
+    updateViews()
+    plti.vb.sigResized.connect(updateViews)
+    return vb
+    
+def add_top_axis(plti,pen=None,label=None):
+    """Add top axis to pg.PlotItem.
+    Following examples/MultiplePlotAxes. Returns a pyqtgraph_ex.ViewBox which is
+    just a normal pyqtgraph.ViewBox with convenience plotting functions.
+    Known limitation: horizontal panning only moves original axis, not added one.
+    Function is thus best suited for static plots rather than GUIs.
+    """
+    if isinstance(plti,pg.PlotWidget):
+        plti=plti.plotItem
+    vb=ViewBox()
+    plti.showAxis('top')
+    plti.scene().addItem(vb)
+    axis=plti.getAxis('top')
+    axis.linkToView(vb)
+    if pen is not None:
+        axis.setPen(pen)
+    if label is not None:
+        axis.setLabel(label)
+    vb.setYLink(plti.vb)    
+    def updateViews():
+        vb.setGeometry(plti.vb.sceneBoundingRect())
+    updateViews()
+    plti.vb.sigResized.connect(updateViews)
+    return vb
+
+def addLegend(plot,**kwargs):
+    """Add a legend to plot.
+    kwargs passed on to LegendItem.__init__. This function is necessary to use
+    pyqtgraph_extensions.LegendItem instead of pyqtgraph's original one."""
+    plot.legend = LegendItem(**kwargs)
+    plot.legend.setParentItem(plot.vb)
+    return plot.legend
+
+def export(o,filename,fmt='png',mkdir=False,fmt_opts={}):
+    # If a list of formats, process one by one
+    if not isinstance(fmt,basestring):
+        fmts=fmt
+        for fmt in fmts:
+            export(o,filename,fmt,mkdir,fmt_opts)
+        return
+    fmt=fmt.lower()
+    dir=os.path.dirname(filename)
+    if len(dir)>0:
+        if not os.path.isdir(dir):
+            if mkdir:
+                os_ex.ensure_dir(dir)
+            else:
+                raise ValueError('Path %s doesn''t exist'%dir)
+   
+    if isinstance(o,pg.GraphicsLayoutWidget) or isinstance(o,GraphicsLayoutWidget):
+        # Ensures resizing is done (and maybe other things - but without this
+        # it can be wrong if run in a script
+        o.show()
+        pg.QtGui.QApplication.processEvents()
+        o.repaint() # this is crucial - something about executing code rather than
+        # waiting for the user means this doesn't get called and the layout can
+        # be wrong
+        pg.QtGui.QApplication.processEvents()
+        item=o.ci
+    elif isinstance(o,pg.GraphicsItem):
+        item=o
+    else:
+        raise ValueError('Don''t know how to export it')
+    if fmt=='png':
+        pgex.ImageExporter(item).export(filename+'.'+fmt)
+    elif fmt=='svg':
+        pgex.SVGExporter(item).export(filename+'.'+fmt)
+    elif fmt in ('pdf','eps'):
+        # generate svg
+        pgex.SVGExporter(item).export(filename+'.'+'svg') 
+        # Convert to eps/pdf
+        subprocess.call(['inkscape','--export-'+fmt+'='+filename+'.'+fmt,'--export-area-drawing',filename+'.svg'])
+        if fmt=='pdf':
+            if not fmt_opts.get('interpolate',False):
+                # Stop ugly interpolation of bitmaps
+                with open(filename+'.'+fmt,"rb") as f:
+                    data = f.read()
+                data=data.replace(b'Interpolate true',b'Interpolate false')
+                with open(filename+'.'+fmt,"wb") as f:
+                    f.write(data)
+        
+def close_all():
+    """Shortcut for QApplication.closeAllWindows."""
+    pg.QtGui.QApplication.closeAllWindows()
+    
+def plot(*args, **kargs):
+    """
+    Create and return a :class:`PlotWindow <pyqtgraph.PlotWindow>` 
+    (this is just a window with :class:`PlotWidget <pyqtgraph.PlotWidget>` inside), plot data in it.
+    Accepts a *title* argument to set the title of the window.
+    All other arguments are used to plot data. (see :func:`PlotItem.plot() <pyqtgraph.PlotItem.plot>`)
+    """
+    pg.mkQApp()
+    #if 'title' in kargs:
+        #w = PlotWindow(title=kargs['title'])
+        #del kargs['title']
+    #else:
+        #w = PlotWindow()
+    #if len(args)+len(kargs) > 0:
+        #w.plot(*args, **kargs)
+        
+    pwArgList = ['title', 'labels', 'name', 'left', 'right', 'top', 'bottom', 'background']
+    pwArgs = {}
+    dataArgs = {}
+    for k in kargs:
+        if k in pwArgList:
+            pwArgs[k] = kargs[k]
+        else:
+            dataArgs[k] = kargs[k]
+        
+    w = PlotWindow(**pwArgs)
+    if len(args) > 0 or len(dataArgs) > 0:
+        w.plot(*args, **dataArgs)
+    pg.plots.append(w)
+    w.show()
+    return w
+    
+def axes_to_rect(x,y):
+    """Return QRectF covering first and last elements of axis vectors.
+    
+    Args:
+        x: array with one nonsingleton dimension
+        y: array with one nonsingleton dimension
+    
+    Returns:
+        QRectF with top-left corner x[0],y[0] and lower-right corner x[-1],y[-1]
+    """
+    x=np.array(x).squeeze()
+    y=np.array(y).squeeze()
+    return QtCore.QRectF(x[0],y[0],x[-1]-x[0],y[-1]-y[0])
+    
+def cornertext(text,parent,corner=(0,0),**kwargs):
+    """Put text in the corner of a ViewBox (e.g. for labelling subpanels).
+    
+    Args:
+        text (str): the text
+        parent: any plot-like object - a ViewBox, AlignedPlotItem, PlotItem, PlotWidget
+        corner (2-tuple of 0,1): (0,0) for upper left, (1,1) for lower right, ...
+        kwargs: passed on to LabelItem.__init__
+    
+    Returns:
+        LabelItem: created object, whose parent is the appropriate view box
+    """
+    # Convert parent to a pg.ViewBox
+    if isinstance(parent,pg.PlotWidget):
+        parent=parent.getPlotItem()
+    if isinstance(parent,pg.PlotItem) or isinstance(parent,AlignedPlotItem):
+        parent=parent.getViewBox()
+    # Use the GraphicsWidgetAnchor base class of
+    # LabelItem to lock its position to the viewbox
+    li=pg.LabelItem(text,**kwargs)    
+    li.setParentItem(parent)
+    li.anchor(corner,corner)
+    return li
+    
+# Probably won't be necessary:
+# class  QGraphicsLayoutSpacer(QtGui.QGraphicsLayoutItem):
+#     def __init__(self,height=0,width=0):
+#         QtGui.QGraphicsLayoutItem.__init__(self)
+#         self.height=height
+#         self.width=width
+#     def sizeHint(self,which,constraint):
+#         return QtCore.QSizeF(self.width,self.height)
+#             
+# class QGraphicsRectWidget(QtGui.QGraphicsLayoutItem,QtGui.QGraphicsRectItem):
+#     def __init__(self,parent=None):
+#         QtGui.QGraphicsRectItem.__init__(self,parent)
+#         QtGui.QGraphicsLayoutItem.__init__(self,parent)
+#     def setGeometry(self,rect):
+#         self.setRect(rect)
+#     def sizeHint(self,which,constraint):
+#         return QtCore.QSizeF(0,0)
