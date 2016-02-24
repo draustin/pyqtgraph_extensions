@@ -8,8 +8,8 @@ This repository contains two packages:
 In principle, it should be possible to import pyqtgraph_extended instead of pyqtgraph and have the same behaviour but with new functionality available. So the two optics for use are:
 
     import pyqtgraph as pg
-    import pyqtgraph_extendsions as pgx
+    import pyqtgraph_extensions as pgx
 
 or 
 
-    import pyqtgraph_exended as pg
+    import pyqtgraph_extended as pg
