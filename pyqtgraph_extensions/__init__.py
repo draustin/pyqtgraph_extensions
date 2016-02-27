@@ -15,6 +15,7 @@ from .misc import *
 from .AlignedPlotItem import *
 from .GraphicsLayout import *
 
+# Bring line styles into the namespace for convenience
 for v in ('DashLine','DashDotLine','DashDotDotLine','DotLine'):
     vars()[v]=getattr(QtCore.Qt,v)
 
