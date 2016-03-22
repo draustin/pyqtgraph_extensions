@@ -79,6 +79,9 @@ class AlignedPlotItem(QtCore.QObject):
         if title is not None:
             self.setTitle(title)
         
+        self.log_x=False
+        self.log_y=False
+        
         if len(kargs) > 0:
             self.plot(**kargs)
             
@@ -119,6 +122,8 @@ class AlignedPlotItem(QtCore.QObject):
             name = item.name()
         if name is not None and hasattr(self, 'legend') and self.legend is not None:
             self.legend.addItem(item, name=name)
+        if hasattr(item, 'setLogMode'):
+            item.setLogMode(self.log_x,self.log_y)
         
     def removeItem(self, item):
         """
@@ -275,3 +280,31 @@ class AlignedPlotItem(QtCore.QObject):
     def getViewBox(self):
         """Return the :class:`ViewBox <pyqtgraph.ViewBox>` contained within."""
         return self.vb
+        
+    def updateLogMode(self):
+        x = self.log_x
+        y = self.log_y
+        for i in self.items:
+            if hasattr(i, 'setLogMode'):
+                i.setLogMode(x,y)
+        self.getAxis('bottom').setLogMode(x)
+        self.getAxis('top').setLogMode(x)
+        self.getAxis('left').setLogMode(y)
+        self.getAxis('right').setLogMode(y)
+    
+    def setLogMode(self, x=None, y=None):
+        """
+        Set log scaling for x and/or y axes.
+        This informs PlotDataItems to transform logarithmically and switches
+        the axes to use log ticking. 
+        
+        Note that *no other items* in the scene will be affected by
+        this; there is (currently) no generic way to redisplay a GraphicsItem
+        with log coordinates.
+        
+        """
+        if x is not None:
+            self.log_x=x
+        if y is not None:
+            self.log_y=y
+        self.updateLogMode()

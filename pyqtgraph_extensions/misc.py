@@ -37,6 +37,11 @@ class LegendItem(pg.LegendItem):
         p.setPen(fn.mkPen(255,255,255,100))
         p.setBrush(fn.mkBrush(self.background_color))
         p.drawRect(self.boundingRect())
+
+# class ImageLayoutItem(pg.ImageItem,QtGui.QGraphicsLayoutItem):
+#     def __init__(self,image=None,parent=None, **kargs):
+#         QtGui.QGraphicsLayoutItem.__init__(self,parent)
+#         pg.ImageItem.__init__(self,image,**kargs)
         
 class ColorBarItem(pg.GraphicsWidget):
     """A color bar for an ImageItem.
@@ -48,26 +53,40 @@ class ColorBarItem(pg.GraphicsWidget):
     """
     def __init__(self,parent=None,image=None,label=None):
         pg.GraphicsWidget.__init__(self,parent)
+        """Previous version used manual layout. This worked for initial setup but
+        I couldn't figure out how to make it update automatically if e.g. the
+        axis width changed. So switched to layout management. This requires
+        the ImageItem to be in a QGraphicsLayoutItem, since it is not one itself.
+        Putting it in a ViewBox seemed the simplest option."""
+        # Setup layout
+        self.layout = QtGui.QGraphicsGridLayout()
+        self.layout.setHorizontalSpacing(0)
+        self.layout.setVerticalSpacing(0)
+        self.layout.setContentsMargins(0,0,0,0)
+        # Setup ViewBox containing the colorbar 
+        self.vb=pg.ViewBox(enableMouse=False)
+        self.vb.setFixedWidth(10)
+        for _ in range(2): # it seems to ignore the padding argument the first time???
+            self.vb.setRange(QtCore.QRectF(0,0,1,1),padding=0)
+        # Setup colorbar, implemented as an ImageItem
         self.bar=pg.ImageItem()
-        self.bar.setParentItem(self)
         self.bar.setImage(np.arange(256)[None,:])
-        self.axis=pg.AxisItem(orientation='right',parent=self)        
-        self.rect_width=10
-        self.left_marg=5        
-        self.setWidth()
+        self.bar.setRect(QtCore.QRectF(0,1,1,-1))
+        self.vb.addItem(self.bar)
+        self.layout.addItem(self.vb,0,0)    
+        # Setup axis  
+        self.axis=AxisItem(orientation='right')#,parent=self)        
+        self.layout.addItem(self.axis,0,1)
+        
+        self.setLayout(self.layout)
         self.image=None
         self.setImage(image)
         if label is not None:
             self.setLabel(label)
-    def resizeEvent(self,ev):
-        y=0#max(-self.axis.boundingRect().y(),0)
-        self.bar.setRect(QtCore.QRectF(self.left_marg,self.height(),self.rect_width,-self.height()))
-        self.axis.setGeometry(self.left_marg+self.rect_width,y,self.width()-self.rect_width-self.left_marg,self.height()-y)
+            
     def setLabel(self,label):
         self.axis.setLabel(label)
-        self.setWidth()
-    def setWidth(self):
-        self.setMinimumWidth(self.left_marg+self.rect_width+self.axis.minimumWidth())
+        
     def setImage(self,image):
         if self.image is not None:
             print('TODO disconnect')
@@ -75,12 +94,57 @@ class ColorBarItem(pg.GraphicsWidget):
         if self.image is not None:
             self.update()
             self.image.sigColorMapChanged.connect(self.update)
+            
     def update(self):
         self.bar.setLookupTable(self.image.lut)
         for _ in range(2):
             # Strange apparent bug in pyqtgraph.AxisItem - doesn't update
             # after only one call. TODO report
             self.axis.setRange(*self.image.levels)
+        
+# class ColorBarItem(pg.GraphicsWidget):
+#     """A color bar for an ImageItem.
+#     
+#     Vertical, with AxisItem for scale on the right side (could be extended to
+#     other orientations and scale on other side). Doesn't respond to changes in 
+#     ImageItem lookup table or levels - will need appropriate signals from
+#     ImageItem for this.
+#     """
+#     def __init__(self,parent=None,image=None,label=None):
+#         pg.GraphicsWidget.__init__(self,parent)
+#         self.bar=pg.ImageItem()
+#         self.bar.setParentItem(self)
+#         self.bar.setImage(np.arange(256)[None,:])
+#         self.axis=AxisItem(orientation='right',parent=self)        
+#         self.rect_width=10
+#         self.left_marg=5        
+#         self.setWidth()
+#         self.image=None
+#         self.setImage(image)
+#         if label is not None:
+#             self.setLabel(label)
+#     def resizeEvent(self,ev):
+#         y=0#max(-self.axis.boundingRect().y(),0)
+#         self.bar.setRect(QtCore.QRectF(self.left_marg,self.height(),self.rect_width,-self.height()))
+#         self.axis.setGeometry(self.left_marg+self.rect_width,y,self.width()-self.rect_width-self.left_marg,self.height()-y)
+#     def setLabel(self,label):
+#         self.axis.setLabel(label)
+#         self.setWidth()
+#     def setWidth(self):
+#         self.setMinimumWidth(self.left_marg+self.rect_width+self.axis.minimumWidth())
+#     def setImage(self,image):
+#         if self.image is not None:
+#             print('TODO disconnect')
+#         self.image=image
+#         if self.image is not None:
+#             self.update()
+#             self.image.sigColorMapChanged.connect(self.update)
+#     def update(self):
+#         self.bar.setLookupTable(self.image.lut)
+#         for _ in range(2):
+#             # Strange apparent bug in pyqtgraph.AxisItem - doesn't update
+#             # after only one call. TODO report
+#             self.axis.setRange(*self.image.levels)
         
 class ViewBox(pg.ViewBox):
     """Convenience extension of ViewBox providing plot functions.
@@ -101,6 +165,10 @@ class ViewBox(pg.ViewBox):
         
 class PlotWindow(pg.PlotWindow):
     """Adds some features to PlotWindow class."""
+    # def __init__(self,**kwargs):
+    #     pg.PlotWindow.__init__(self,**kwargs)
+    #     # adjust_widget(self,**kwargs) - no, it already sets window title to title
+        
     def _repr_png_(self):
         """Generate png representation for ipython notebook.
         

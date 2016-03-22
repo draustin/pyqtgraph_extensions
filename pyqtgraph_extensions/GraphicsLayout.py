@@ -1,6 +1,6 @@
 import pyqtgraph as pg
 from pyqtgraph import QtCore,QtGui
-from . import AlignedPlotItem,ColorBarItem
+from . import AlignedPlotItem,ColorBarItem,adjust_widget
 
 class GraphicsLayout(pg.GraphicsLayout):
     """Like pyqtgraph.GraphicsLayout except supports items which can
@@ -73,7 +73,9 @@ class GraphicsLayout(pg.GraphicsLayout):
         
 class GraphicsLayoutWidget(pg.GraphicsView):
     def __init__(self, parent=None, **kwargs):
+        """kwargs passed through adjust_widget before GraphicsLayout.__init__"""
         pg.GraphicsView.__init__(self, parent)
+        kwargs=adjust_widget(self,**kwargs)
         self.ci = GraphicsLayout(**kwargs)
         for n in ['nextRow', 'nextCol', 'nextColumn', 'addPlot', 'addViewBox', 'addItem', 'getItem', 'addLayout', 'addLabel',
         'removeItem', 'itemIndex', 'addAlignedPlot', 'nextRows', 'nextCols', 'addColorBar', 'nextRows', 'addHorizontalSpacer', 'addVerticalSpacer', 'setRowStretchFactor', 'setColumnStretchFactor']:

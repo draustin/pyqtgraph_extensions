@@ -120,7 +120,7 @@ class AxisItem(pg.AxisItem):
             self.aset_lmt_btns[1].setPos(xm1,0)
             self.enable_auto_range_btn.setPos(x2,0)
     def set_lmt_btn_clicked(self,type):
-        value,ok=QtGui.QInputDialog.getDouble(self.parent(),self.label.toPlainText(),('Lower','Upper')[type]+' limit:',self.range[type],decimals=2)
+        value,ok=QtGui.QInputDialog.getDouble(self.parent(),self.label.toPlainText(),('Lower','Upper')[type]+' limit:',self.range[type],decimals=6)
         if ok:
             self.set_view_range(type,value)
     def aset_lmt_btn_clicked(self,type):

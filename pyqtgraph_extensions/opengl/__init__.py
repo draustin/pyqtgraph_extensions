@@ -212,13 +212,44 @@ class GLWireBoxItem(pgl.GLGraphicsItem.GLGraphicsItem):
                             
         glEnd()
         
-def export(o):
+def export(widget,filename,fmt='png'):
+    """Export OpenGL widget or widget containing them.
+    
+    Valid widget types are Qt.QtOpenGL.QGLWidget (including pyqtgraph.GLViewWidget),
+    any QWidget. For QWidgets, the grabWidget method is first used to get the 
+    non-OpenGL parts, and then the grabFrameBuffer method is called on all
+    QGLWidget children, with the results overdrawn.
+    """
+    QtGui.QApplication.processEvents()
     # Save to one format    
-    if isinstance(o,pgl.GLViewWidget):
+    if isinstance(widget,pg.Qt.QtOpenGL.QGLWidget):
         if fmt=='png':
-            o.grabFrameBuffer().save(filename+'.'+fmt)
+            widget.grabFrameBuffer().save(filename+'.'+fmt)
         else:
             raise ValueError('Don''t know how to export GLViewWidget with anything other than png')
+    elif isinstance(widget,QtGui.QWidget):
+        # Does non-OpenGL parts nicely, but OpenGL parts aren't rendered correctly
+        # i.e. transparency doesn't work
+        pixmap=QtGui.QPixmap.grabWidget(widget)
+        image=pixmap.toImage()
+        # Calling paintGL removes overlays and mixes things up with multiple
+        # QGLWidgets. Removed it - TODO thorough test
+        # for w in widget.findChildren(pg.Qt.QtOpenGL.QGLWidget):
+        #     w.paintGL()
+        OpenGL.GL.glFlush() # Not sure if needed
+        # Overwrite regions of image containing QGLWidgets
+        painter=QtGui.QPainter(image)
+        #n=0
+        for w in widget.findChildren(pg.Qt.QtOpenGL.QGLWidget):
+            w.makeOverlayCurrent() # needed for text produced by renderText
+            w.makeCurrent() # don't know if needed but doesn't hurt
+            subimage=w.grabFrameBuffer(True)
+            #subimage.save('s%d.png'%n)
+            painter.drawImage(w.pos(),subimage)
+            #n+=1
+        painter.end()
+        # Make file
+        image.save(filename+'.'+fmt)
     else:
         raise ValueError('Don''t know how to export')
             

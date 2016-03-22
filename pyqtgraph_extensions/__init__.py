@@ -13,7 +13,6 @@ import os_ex
 from .AxisItem import *
 from .misc import *
 from .AlignedPlotItem import *
-from .GraphicsLayout import *
 
 # Bring line styles into the namespace for convenience
 for v in ('DashLine','DashDotLine','DashDotDotLine','DotLine'):
@@ -27,6 +26,12 @@ pg.setConfigOption('foreground', 'k')
 #print(QtGui.QApplication.font().family())
 if QtGui.QApplication.font().family()=='Ubuntu':
     QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+# Note that for changing the font size, found that
+# pg.QtGui.QApplication.font().setPointSize(12) 
+# doesn't work whereas
+# pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif',10))
+# does, at least in IPython notebook.
+
 # Tableau discrete color schemes
 # https://github.com/jiffyclub/palettable/blob/master/palettable/tableau/tableau.py
 # http://www.randalolson.com/2014/06/28/how-to-make-beautiful-data-visualizations-in-python-with-matplotlib/
@@ -262,6 +267,23 @@ def cornertext(text,parent,corner=(0,0),**kwargs):
     li.setParentItem(parent)
     li.anchor(corner,corner)
     return li
+    
+def adjust_widget(widget,window_title=None,size=None,**kwargs):
+    if window_title is not None:
+        widget.setWindowTitle(window_title)
+    if size is not None:
+        widget.resize(*size)
+    return kwargs
+    
+class AnchoredPlotItem(pg.PlotItem,pg.GraphicsWidgetAnchor):
+    def __init__(self,parent_item,anchor=(0,0),offset=(10,10),size=(100,100),**kwargs):
+        pg.PlotItem.__init__(self,**kwargs)
+        pg.GraphicsWidgetAnchor.__init__(self)
+        self.setParentItem(parent_item)
+        self.anchor(anchor,anchor,offset)
+        self.resize(*size)
+
+from .GraphicsLayout import *
     
 # Probably won't be necessary:
 # class  QGraphicsLayoutSpacer(QtGui.QGraphicsLayoutItem):

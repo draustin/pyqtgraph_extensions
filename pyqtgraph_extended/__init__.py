@@ -20,8 +20,8 @@ if __name__=="__main__":
         im.setLookupTable(get_colormap_lut())
         x=np.arange(100)-50
         y=np.arange(110)[:,None]-55
-        z=5*np.exp(-(x**2+y**2)/100.0)
-        im.setImage(z+np.random.random(z.shape))
+        z=np.exp(-(x**2+y**2)/100.0)
+        im.setImage((z+0*np.random.random(z.shape))*3.4e-29)
         plt.addItem(im)
         cb=ColorBarItem(image=im)
         cb.setLabel('intensity')
@@ -50,12 +50,12 @@ if __name__=="__main__":
         gl=glw.ci
         gl.setBorder((255,0,0))
         plt1=gl.addAlignedPlot(labels={'left':'left 1','top':'top 1','right':'right 1'},x=[1,2,3],y=[3,4,5])
-        gl.addHorzSpacer()
+        gl.addHorizontalSpacer()
         plt2=gl.addAlignedPlot(labels={'left':'left 2','top':'top 2','right':'right 2'})
-        gl.addHorzSpacer(5)
+        gl.addHorizontalSpacer(5)
         gl.addColorBar(label='color',row=2)
         gl.nextRows()
-        gl.addVertSpacer(50)
+        gl.addVerticalSpacer(50)
         plt3=gl.addAlignedPlot(labels={'left':'left 3'},x=[1,5,6],y=[2,8,1])
         plt3r=add_right_axis(plt3,pen=(255,0,0))
         plt3r.plot([1,2,3],[4,5,6],pen=(255,0,0))

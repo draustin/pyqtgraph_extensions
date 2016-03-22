@@ -159,16 +159,36 @@ def test_cornertext():
     pgx.cornertext('(top right, red)',plt,(1,0),color='r')
     pgx.cornertext('(bottom right, bold italic)',plt,(1,1),bold=True,italic=True)
 
+def test_AlignedPlotItem_log():
+    glw=pgx.GraphicsLayoutWidget()
+    plt=glw.addAlignedPlot()
+    plt.plot(range(1,100),np.arange(1,100)**2)
+    plt.setLogMode(x=True,y=True)
+    glw.show()
+    return glw
+    
+def test_AnchoredPlotItem():
+    glw=pg.GraphicsLayoutWidget()
+    plt=glw.addPlot()
+    plt.plot(range(10),np.arange(10)**2)
+    ini=pgx.AnchoredPlotItem(plt,anchor=(1,0),offset=(-50,0))
+    ini.plot(range(10),-np.arange(10)**2)
+    glw.show()
+    return glw
+
 def test_all():
     ret_vals=[fun() for fun in (test_ColorBarItem,
-    test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,test_cornertext,test_complex_layout,test_PlotWindow)]
-    pgx.export(ret_vals[-2],os.path.join(os.path.expanduser('~'),'test'),('png','svg'))
+    test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem)]
+    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),('png','svg'))
     pgx.close_all()
+    
+
     
     
 if __name__=="__main__":
     if QtCore.QCoreApplication.instance() is not None:
         app = QtGui.QApplication([])
     test_all()
+    #f=test_AnchoredPlotItem()
     
     
