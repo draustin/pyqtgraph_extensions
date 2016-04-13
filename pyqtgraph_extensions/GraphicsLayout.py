@@ -1,6 +1,6 @@
 import pyqtgraph as pg
 from pyqtgraph import QtCore,QtGui
-from . import AlignedPlotItem,ColorBarItem,adjust_widget
+from . import AlignedPlotItem,ColorBarItem,adjust_widget,IPythonPNGRepr
 
 class GraphicsLayout(pg.GraphicsLayout):
     """Like pyqtgraph.GraphicsLayout except supports items which can
@@ -71,7 +71,7 @@ class GraphicsLayout(pg.GraphicsLayout):
             col=self.currentCol
         self.layout.setColumnStretchFactor(col+rel_col,factor)
         
-class GraphicsLayoutWidget(pg.GraphicsView):
+class GraphicsLayoutWidget(pg.GraphicsView,IPythonPNGRepr):
     def __init__(self, parent=None, **kwargs):
         """kwargs passed through adjust_widget before GraphicsLayout.__init__"""
         pg.GraphicsView.__init__(self, parent)
@@ -88,26 +88,14 @@ class GraphicsLayoutWidget(pg.GraphicsView):
         for item in items:
             self.scene().removeItem(item)
             
-    def _repr_png_(self):
-        """Generate png representation for ipython notebook.
-        
-        Thanks to
-        https://groups.google.com/forum/#!msg/pyqtgraph/Nu921kIkeFk/tmvn-BR_BQ0J
-        """
+    def get_repr_png_image(self):
         # put this in in the hope that it would apply the layout resizing
         # before converting to PNG. It still doesn't. So in notebook, have to
         # use separate cells
         QtGui.QApplication.processEvents()
         # Need to keep a reference to the image, otherwise Qt segfaults
-        self._repr_png_image = QtGui.QImage(self.viewRect().size().toSize(),
+        image = QtGui.QImage(self.viewRect().size().toSize(),
                             QtGui.QImage.Format_RGB32)
-        painter = QtGui.QPainter(self._repr_png_image)
+        painter = QtGui.QPainter(image)
         self.render(painter)
-
-        byte_array = QtCore.QByteArray()
-        buffer = QtCore.QBuffer(byte_array)
-        buffer.open(QtCore.QIODevice.ReadWrite)
-        self._repr_png_image.save(buffer, 'PNG')
-        buffer.close()
-
-        return bytes(byte_array)
+        return image    

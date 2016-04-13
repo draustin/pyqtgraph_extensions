@@ -15,7 +15,7 @@ from .misc import *
 from .AlignedPlotItem import *
 
 # Bring line styles into the namespace for convenience
-for v in ('DashLine','DashDotLine','DashDotDotLine','DotLine'):
+for v in ('SolidLine','DashLine','DashDotLine','DashDotDotLine','DotLine'):
     vars()[v]=getattr(QtCore.Qt,v)
 
 # Switch to using white background and black foreground
@@ -243,6 +243,14 @@ def axes_to_rect(x,y):
     x=np.array(x).squeeze()
     y=np.array(y).squeeze()
     return QtCore.QRectF(x[0],y[0],x[-1]-x[0],y[-1]-y[0])
+    
+def image_axes(x,y,im,parent=None,**kwargs):
+    if parent is None:
+        parent=pg.PlotWindow()
+    item=pg.ImageItem(image=im,**kwargs)
+    item.setRect(axes_to_rect(x,y))
+    parent.addItem(item)
+    return item,parent
     
 def cornertext(text,parent,corner=(0,0),**kwargs):
     """Put text in the corner of a ViewBox (e.g. for labelling subpanels).

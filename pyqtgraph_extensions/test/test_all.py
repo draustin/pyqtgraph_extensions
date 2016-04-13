@@ -147,6 +147,7 @@ def test_complex_layout():
     gl.setColumnStretchFactor(2,col=5)
     glw.show()
     ##
+    glw._repr_png_()
     return glw
     
 def test_PlotWindow():

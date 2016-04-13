@@ -4,8 +4,9 @@ import pyqtgraph.opengl as pgl
 from OpenGL.GL import *
 from pyqtgraph.python2_3 import *
 import numpy as np
+from .. import IPythonPNGRepr
 
-class GLViewWidget(pgl.GLViewWidget):
+class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
     """Trivial extension to pyqtgraph.opengl.GLViewWidget with sensible initial size."""
     def __init__(self,size_hint=(400,400),title=None):
         pgl.GLViewWidget.__init__(self)
@@ -39,14 +40,13 @@ class GLViewWidget(pgl.GLViewWidget):
         if self.title['string'] is not None:
             self.renderText((self.size().width()-self.title['width'])/2,self.title['height'],self.title['string'],self.title['font'])
             
-    def _repr_png_(self):
+    def get_repr_png_image(self):
         """Generate png representation for ipython notebook.
         
-        Similar pyqtgraph_extended.GraphicsLayoutWidget._repr_png_ but with
+        Similar to equivalent in pyqtgraph_extended.GraphicsLayoutWidget but with
         some tweaks for OpenGL.
-        """
         
-        """Took a while to make this work in ipython notebook. The secret was
+        Took a while to make this work in ipython notebook. The secret was
         self.paintGL and glFlush. Without this, renderPixmap and grabFrameBuffer
         return the screen underneath rather than the GLViewWidget's contents.
         See 
@@ -59,24 +59,14 @@ class GLViewWidget(pgl.GLViewWidget):
         image=QtGui.QImage(a.data,w,h,QtGui.QImage.Format_ARGB32)
         
         Problem is text rendered with renderText isn't shown.
-        
         """
-        
         # without these two, get screen underneath widget
         self.paintGL()
         glFlush() 
         
         # Get frame buffer as image and write it to a buffer
-        image=self.grabFrameBuffer()
-        byte_array = QtCore.QByteArray()
-        buffer = QtCore.QBuffer(byte_array)
-        buffer.open(QtCore.QIODevice.ReadWrite)
-        image.save(buffer, 'PNG')
-        buffer.close()
-        
-        return bytes(byte_array)
-    
-                
+        return self.grabFrameBuffer()
+
 class GLAxisItem(pgl.GLAxisItem):
     """Replacement GLAxisItem with extra features.
     * adjustable line width - couldn't see the lines clearly in the original
@@ -212,6 +202,31 @@ class GLWireBoxItem(pgl.GLGraphicsItem.GLGraphicsItem):
                             
         glEnd()
         
+class GLContainerWidget(QtGui.QWidget,IPythonPNGRepr):
+    """Extension of QWidget that can contain QGLWidgets and still export properly."""
+    def get_repr_png_image(self):
+        # Does non-OpenGL parts nicely, but OpenGL parts aren't rendered correctly
+        # i.e. transparency doesn't work
+        pixmap=QtGui.QPixmap.grabWidget(self)
+        image=pixmap.toImage()
+        # Calling paintGL removes overlays and mixes things up with multiple
+        # QGLWidgets. Removed it - TODO thorough test
+        # for w in self.findChildren(pg.Qt.QtOpenGL.QGLWidget):
+        #     w.paintGL()
+        OpenGL.GL.glFlush() # Not sure if needed
+        # Overwrite regions of image containing QGLWidgets
+        painter=QtGui.QPainter(image)
+        #n=0
+        for w in self.findChildren(pg.Qt.QtOpenGL.QGLWidget):
+            w.makeOverlayCurrent() # needed for text produced by renderText
+            w.makeCurrent() # don't know if needed but doesn't hurt
+            subimage=w.grabFrameBuffer(True)
+            #subimage.save('s%d.png'%n)
+            painter.drawImage(w.pos(),subimage)
+            #n+=1
+        painter.end()
+        return image
+        
 def export(widget,filename,fmt='png'):
     """Export OpenGL widget or widget containing them.
     
@@ -227,60 +242,11 @@ def export(widget,filename,fmt='png'):
             widget.grabFrameBuffer().save(filename+'.'+fmt)
         else:
             raise ValueError('Don''t know how to export GLViewWidget with anything other than png')
-    elif isinstance(widget,QtGui.QWidget):
-        # Does non-OpenGL parts nicely, but OpenGL parts aren't rendered correctly
-        # i.e. transparency doesn't work
-        pixmap=QtGui.QPixmap.grabWidget(widget)
-        image=pixmap.toImage()
-        # Calling paintGL removes overlays and mixes things up with multiple
-        # QGLWidgets. Removed it - TODO thorough test
-        # for w in widget.findChildren(pg.Qt.QtOpenGL.QGLWidget):
-        #     w.paintGL()
-        OpenGL.GL.glFlush() # Not sure if needed
-        # Overwrite regions of image containing QGLWidgets
-        painter=QtGui.QPainter(image)
-        #n=0
-        for w in widget.findChildren(pg.Qt.QtOpenGL.QGLWidget):
-            w.makeOverlayCurrent() # needed for text produced by renderText
-            w.makeCurrent() # don't know if needed but doesn't hurt
-            subimage=w.grabFrameBuffer(True)
-            #subimage.save('s%d.png'%n)
-            painter.drawImage(w.pos(),subimage)
-            #n+=1
-        painter.end()
+    elif isinstance(widget,GLContainerWidget):
+        image=widget.get_repr_png_image()
         # Make file
         image.save(filename+'.'+fmt)
     else:
         raise ValueError('Don''t know how to export')
             
-if __name__=="__main__":
-    import numpy as np
-    def test_GLViewWidget():
-        view=GLViewWidget(title='test_GLViewWidget')
-        ai=GLAxisItem()
-        view.addItem(ai)
-        view.show()
-        return view
-    def test_text():
-        view=GLViewWidget(title={'string':'test_text','color':(1,0,0),'font':pg.QtGui.QFont('',20)})
-        for n in range(10):
-            ti=GLTextItem(str(n),np.random.random(3),np.random.random(3))
-            view.addItem(ti)
-        view.show()
-        return view
-    def test_box():
-        ##
-        view=GLViewWidget()
-        view.setTitle(string='test_box',color=(0,0,1))
-        b=GLWireBoxItem()
-        b.size=[1,2,3]
-        view.addItem(b)
-        ai=GLAxisItem()
-        view.addItem(ai)
-        ti=GLTextItem('0.5,1,1.5',[0.5,1,1.5])
-        view.addItem(ti)
-        view.show()
-        ##
-        return view
-    ret_vals=[fun() for fun in (test_GLViewWidget,test_text,test_box)]
     

@@ -4,6 +4,28 @@ import numpy as np
 from . import AxisItem
 from pyqtgraph import QtCore,QtGui
 
+class IPythonPNGRepr:
+    """Class which can represent itself as a PNG in an IPython notebook.
+
+    Subclasses need to define method get_repr_png_image() which returns a
+    QImage.    
+    """
+    def _repr_png_(self):
+        """Generate png representation for ipython notebook.
+        
+        Thanks to
+        https://groups.google.com/forum/#!msg/pyqtgraph/Nu921kIkeFk/tmvn-BR_BQ0J
+        """
+        # Need to keep a reference to the image, otherwise Qt segfaults
+        self._repr_png_image=self.get_repr_png_image()
+        byte_array = QtCore.QByteArray()
+        buffer = QtCore.QBuffer(byte_array)
+        buffer.open(QtCore.QIODevice.ReadWrite)
+        self._repr_png_image.save(buffer, 'PNG')
+        buffer.close()
+        
+        return bytes(byte_array)
+        
 class ImageItem(pg.ImageItem):
     sigColorMapChanged = QtCore.Signal()
     def __init__(self, image=None, **kargs):
@@ -47,9 +69,10 @@ class ColorBarItem(pg.GraphicsWidget):
     """A color bar for an ImageItem.
     
     Vertical, with AxisItem for scale on the right side (could be extended to
-    other orientations and scale on other side). Doesn't respond to changes in 
-    ImageItem lookup table or levels - will need appropriate signals from
-    ImageItem for this.
+    other orientations and scale on other side). Responds to changes in 
+    ImageItem lookup table or levels.
+    
+    TODO: enable control of the levels by adjusting the axis.
     """
     def __init__(self,parent=None,image=None,label=None):
         pg.GraphicsWidget.__init__(self,parent)
@@ -71,7 +94,7 @@ class ColorBarItem(pg.GraphicsWidget):
         # Setup colorbar, implemented as an ImageItem
         self.bar=pg.ImageItem()
         self.bar.setImage(np.arange(256)[None,:])
-        self.bar.setRect(QtCore.QRectF(0,1,1,-1))
+        self.bar.setRect(QtCore.QRectF(0,0,1,1))
         self.vb.addItem(self.bar)
         self.layout.addItem(self.vb,0,0)    
         # Setup axis  
