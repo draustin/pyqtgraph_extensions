@@ -13,3 +13,17 @@ In principle, it should be possible to import pyqtgraph_extended instead of pyqt
 or 
 
     import pyqtgraph_extended as pg
+
+
+## make it work on raspberry pi
+
+```
+sudo apt-get install libblas-dev
+sudo apt-get install liblapack-dev
+sudo apt-get install python-dev
+sudo apt-get install libatlas-base-dev
+sudo apt-get install gfortran
+sudo apt-get install python-setuptools
+sudo easy_install scipy
+```
+
