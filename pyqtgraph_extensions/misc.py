@@ -40,7 +40,7 @@ class ImageItem(pg.ImageItem):
         Only the first format is compatible with lookup tables. See :func:`makeARGB <pyqtgraph.makeARGB>`
         for more details on how levels are applied.
         """
-        emit=self.levels!=levels
+        emit=np.any(self.levels!=levels)
         pg.ImageItem.setLevels(self,levels,update)
         if emit:
             self.sigColorMapChanged.emit()

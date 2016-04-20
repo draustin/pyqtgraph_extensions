@@ -213,7 +213,7 @@ class AlignedPlotItem(QtCore.QObject):
         Show or hide one of the plot's axis labels (the axis itself will be unaffected).
         axis must be one of 'left', 'bottom', 'right', or 'top'
         """
-        self.getScale(axis).showLabel(show)
+        self.getAxis(axis).showLabel(show)
 
     def setTitle(self, title=None, **args):
         """
