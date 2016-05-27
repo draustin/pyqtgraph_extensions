@@ -171,7 +171,11 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={}):
         # waiting for the user means this doesn't get called and the layout can
         # be wrong
         pg.QtGui.QApplication.processEvents()
-        item=o.ci
+        # Passing the QGraphicsScene to the exporter ensures that all items in the
+        # scene being exported
+        item=o.scene()
+    elif isinstance(o,pg.PlotWidget):
+        item=o.getPlotItem()
     elif isinstance(o,pg.GraphicsItem):
         item=o
     else:

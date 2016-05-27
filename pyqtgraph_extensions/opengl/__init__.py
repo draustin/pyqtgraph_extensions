@@ -73,10 +73,13 @@ class GLAxisItem(pgl.GLAxisItem):
     * text labels for axes.
     Paint code stolen from original.
     """
-    def __init__(self, size=None, antialias=True, glOptions='translucent',line_width=2,show_labels=True):
+    def __init__(self, size=None, antialias=True, glOptions='translucent',line_width=2,show_labels=True,label_font=None):
         pgl.GLAxisItem.__init__(self,size,antialias,glOptions)
         self.line_width=2
         self.show_labels=show_labels
+        if label_font is None:
+            label_font=QtGui.QFont()
+        self.label_font=label_font
     def paint(self):
 
         #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -106,11 +109,11 @@ class GLAxisItem(pgl.GLAxisItem):
         
         if self.show_labels:
             glColor(0,0,1)
-            self.view().renderText(x,0,0,'x')
+            self.view().renderText(x,0,0,'x',self.label_font)
             glColor(1,1,0)
-            self.view().renderText(0,y,0,'y')
+            self.view().renderText(0,y,0,'y',self.label_font)
             glColor(0,1,0)
-            self.view().renderText(0,0,z,'z')
+            self.view().renderText(0,0,z,'z',self.label_font)
             
 class GLTextItem(pgl.GLGraphicsItem.GLGraphicsItem):
     def __init__(self,string=None,pos=(0,0,0),color=(1,1,1)):
@@ -248,5 +251,47 @@ def export(widget,filename,fmt='png'):
         image.save(filename+'.'+fmt)
     else:
         raise ValueError('Don''t know how to export')
+        
+class GLGridItem(pgl.GLGridItem):
+    """
+    Extension giving control of color and line width
+    Displays a wire-grame grid. 
+    """
+    
+    def __init__(self,color=None,width=1,**kwargs):
+        pgl.GLGridItem.__init__(self,**kwargs)
+        if color is None:
+            color=(1,1,1,0.3)
+        self.color=color
+        if width is None:
+            width=1
+        self.width=width
+        
+    def paint(self):
+        self.setupGLState()
+        
+        glLineWidth(self.width)
+        
+        if self.antialias:
+            glEnable(GL_LINE_SMOOTH)
+            glEnable(GL_BLEND)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+            glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
+            
+        glBegin( GL_LINES )
+        
+        x,y,z = self.size()
+        xs,ys,zs = self.spacing()
+        xvals = np.arange(-x/2., x/2. + xs*0.001, xs) 
+        yvals = np.arange(-y/2., y/2. + ys*0.001, ys) 
+        glColor4f(*self.color)
+        for x in xvals:
+            glVertex3f(x, yvals[0], 0)
+            glVertex3f(x,  yvals[-1], 0)
+        for y in yvals:
+            glVertex3f(xvals[0], y, 0)
+            glVertex3f(xvals[-1], y, 0)
+        
+        glEnd()
             
     

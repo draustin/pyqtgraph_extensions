@@ -50,13 +50,16 @@ class LegendItem(pg.LegendItem):
     Customisation subclass of pyqtgraph.LegendItem for:
         * control over background color - defaults to pyqtgraph's default
     """
-    def __init__(self, size=None, offset=None,background_color=None):
+    def __init__(self, size=None, offset=None,background_color=None,border_color=None):
         pg.LegendItem.__init__(self,size,offset)
         if background_color is None:
             background_color=pg.CONFIG_OPTIONS['background']
+        if border_color is None:
+            border_color=pg.CONFIG_OPTIONS['foreground']
         self.background_color=background_color
+        self.border_color=border_color
     def paint(self, p, *args):
-        p.setPen(fn.mkPen(255,255,255,100))
+        p.setPen(fn.mkPen(self.border_color))
         p.setBrush(fn.mkBrush(self.background_color))
         p.drawRect(self.boundingRect())
 

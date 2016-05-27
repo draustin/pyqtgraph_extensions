@@ -42,8 +42,11 @@ class GraphicsLayout(pg.GraphicsLayout):
         if row is None:
             row=self.currentRow
         self.addItem(cbar,row=row+rel_row,col=col,rowspan=rowspan,colspan=colspan)
-    def nextRows(self,N=4):
+    def nextRows(self,N=4,space=None):
         for n in range(N):
+            self.nextRow()
+        if space is not None:
+            self.addVerticalSpacer(space)
             self.nextRow()
     def nextCols(self,N=2):
         for n in range(N):
