@@ -11,6 +11,7 @@ class GraphicsLayout(pg.GraphicsLayout):
     def __init__(self, parent=None, border=None):
         pg.GraphicsLayout.__init__(self,parent,border)
         self.setSpacing(0)
+        
     def addAlignedPlot(self, row=None, col=None, **kwargs):
         """
         Create an AlignedPlotItem starting in the next available cell (or in the cell specified)
@@ -26,6 +27,7 @@ class GraphicsLayout(pg.GraphicsLayout):
         
         self.currentCol=col+3
         return plot
+        
     def addLayout(self, row=None, col=None, rowspan=1, colspan=1, **kargs):
         """
         Create an empty GraphicsLayout and place it in the next available cell (or in the cell specified)
@@ -35,6 +37,7 @@ class GraphicsLayout(pg.GraphicsLayout):
         layout = GraphicsLayout(**kargs)
         self.addItem(layout, row, col, rowspan, colspan)
         return layout
+        
     def addColorBar(self,row=None,rel_row=None,col=None,rowspan=1,colspan=1,**kwargs):
         cbar=ColorBarItem(self,**kwargs)
         if rel_row is None:
@@ -42,15 +45,19 @@ class GraphicsLayout(pg.GraphicsLayout):
         if row is None:
             row=self.currentRow
         self.addItem(cbar,row=row+rel_row,col=col,rowspan=rowspan,colspan=colspan)
+        return cbar
+        
     def nextRows(self,N=4,space=None):
         for n in range(N):
             self.nextRow()
         if space is not None:
             self.addVerticalSpacer(space)
             self.nextRow()
+            
     def nextCols(self,N=2):
         for n in range(N):
             self.nextCol()
+            
     def addHorizontalSpacer(self,width=10,row=None,col=None):
         spacer=pg.GraphicsWidget()
         spacer.setFixedWidth(width)

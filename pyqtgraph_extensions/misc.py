@@ -106,6 +106,8 @@ class ColorBarItem(pg.GraphicsWidget):
         
         self.setLayout(self.layout)
         self.image=None
+        self.fixed_lut=None
+        self.fixed_levels=None
         self.setImage(image)
         if label is not None:
             self.setLabel(label)
@@ -121,12 +123,25 @@ class ColorBarItem(pg.GraphicsWidget):
             self.update()
             self.image.sigColorMapChanged.connect(self.update)
             
+    def setFixedLookupTableLevels(self,lut=None,levels=None):
+        self.fixed_lut=lut
+        self.fixed_levels=levels
+        self.update()
+            
     def update(self):
-        self.bar.setLookupTable(self.image.lut)
+        if self.fixed_lut is None:
+            lut=self.image.lut
+        else:
+            lut=self.fixed_lut
+        if self.fixed_levels is None:
+            levels=self.image.levels
+        else:
+            levels=self.fixed_levels
+        self.bar.setLookupTable(lut)
         for _ in range(2):
             # Strange apparent bug in pyqtgraph.AxisItem - doesn't update
             # after only one call. TODO report
-            self.axis.setRange(*self.image.levels)
+            self.axis.setRange(*levels)
         
 # class ColorBarItem(pg.GraphicsWidget):
 #     """A color bar for an ImageItem.
