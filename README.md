@@ -15,7 +15,7 @@ or
     import pyqtgraph_extended as pg
 
 
-## make it work on raspberry pi
+## How to make it work on raspberry pi
 
 ```
 sudo apt-get install libblas-dev
@@ -26,4 +26,3 @@ sudo apt-get install gfortran
 sudo apt-get install python-setuptools
 sudo easy_install scipy
 ```
-
