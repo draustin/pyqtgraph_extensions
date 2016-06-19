@@ -63,17 +63,20 @@ class GraphicsLayout(pg.GraphicsLayout):
         spacer.setFixedWidth(width)
         spacer.setFixedHeight(0)
         self.addItem(spacer,row,col)
+        
     def addVerticalSpacer(self,height=10,row=None,col=None):
         spacer=pg.GraphicsWidget()
         spacer.setFixedWidth(0)
         spacer.setFixedHeight(height)
         self.addItem(spacer,row,col)
+        
     def setRowStretchFactor(self,factor,row=None,rel_row=None):
         if rel_row is None:
             rel_row=0
         if row is None:
             row=self.currentRow
         self.layout.setRowStretchFactor(row+rel_row,factor)
+        
     def setColumnStretchFactor(self,factor,col=None,rel_col=None):
         if rel_col is None:
             rel_col=0

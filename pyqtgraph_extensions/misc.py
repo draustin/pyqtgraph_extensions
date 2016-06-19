@@ -138,10 +138,11 @@ class ColorBarItem(pg.GraphicsWidget):
         else:
             levels=self.fixed_levels
         self.bar.setLookupTable(lut)
-        for _ in range(2):
-            # Strange apparent bug in pyqtgraph.AxisItem - doesn't update
-            # after only one call. TODO report
-            self.axis.setRange(*levels)
+        if levels is not None:
+            for _ in range(2):
+                # Strange apparent bug in pyqtgraph.AxisItem - doesn't update
+                # after only one call. TODO report
+                self.axis.setRange(*levels)
         
 # class ColorBarItem(pg.GraphicsWidget):
 #     """A color bar for an ImageItem.
