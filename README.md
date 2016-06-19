@@ -15,6 +15,7 @@ or
     import pyqtgraph_extended as pg
 
 The extensions include:
+
 * AlignedPlotItem --- a substitute for [pyqtgraph.PlotItem](http://www.pyqtgraph.org/documentation/graphicsItems/plotitem.html?highlight=plotitem#pyqtgraph.PlotItem) in which the internal elements are managed by the parent layout. This allows for better control over the alignment and ensuring that the edges of plots line up.
 * Simplified exporting
 * Easy adding of a second vertical axis on the right hand side (with linked x axis), likewise for a second horizontal axis on the top.
