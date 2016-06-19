@@ -281,6 +281,7 @@ def cornertext(text,parent,corner=(0,0),**kwargs):
     return li
     
 def adjust_widget(widget,window_title=None,size=None,**kwargs):
+    """Apply some adjustments to a widget. Unused kwargs are returned."""
     if window_title is not None:
         widget.setWindowTitle(window_title)
     if size is not None:
