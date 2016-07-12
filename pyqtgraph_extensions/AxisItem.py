@@ -1,7 +1,12 @@
-import os
+import os,logging
 import pyqtgraph as pg
 from pyqtgraph import QtCore,QtGui
 from functools import partial
+
+logger=logging.getLogger(__name__)
+
+# TODO create a ColorBarAxisItem subclass designed to go next to a colorbar and
+# control an image.
 
 class AxisItem(pg.AxisItem):
     """Replacement for pyqtgraph.AxisItem, with:
@@ -10,6 +15,8 @@ class AxisItem(pg.AxisItem):
         * ability to handle zero height (for top/bottom) or zero width (for left/right)
         which is useful for certain complex grid layouts (TODO: example)
     """
+    range_changed=QtCore.pyqtSignal()
+    
     def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True):
         pg.AxisItem.__init__(self,orientation,pen,linkView,parent,maxTickLength,showValues)
         self.set_lmt_btns=[]
@@ -37,9 +44,23 @@ class AxisItem(pg.AxisItem):
         btn.clicked.connect(self.enable_auto_range_btn_clicked) # late binding if function used
         self.enable_auto_range_btn=btn
         self.mouseHovering=False
+        self.buttons_enabled=True
         self.updateButtons()
+        
+    def close(self):
+        for btn in self.set_lmt_btns:
+            btn.setParent(None)
+        self.set_lmt_btns=None
+        for btn in self.aset_lmt_btns:
+            btn.setParent(None)
+        self.aset_lmt_btns=None
+        self.enable_auto_range_btn.setParent(None)
+        self.enable_auto_range_btn=None
+        pg.AxisItem.close(self)
+        
     def axis(self):
         return int(self.orientation in {'left','right'})
+        
     def linkToView(self,view):
         old_view=self.linkedView()
         pg.AxisItem.linkToView(self,view)
@@ -48,11 +69,13 @@ class AxisItem(pg.AxisItem):
             old_view.sigStateChanged.disconnect(self.respond_linked_view_state_change)
         if view is not None:
             view.sigStateChanged.connect(self.respond_linked_view_state_change)
+            
     def respond_linked_view_state_change(self):
         s=not (self.linkedView().autoRangeEnabled()[self.axis()] is False)
         self.auto_range_enabled=s
         path=os.path.dirname(os.path.abspath(__file__))
         self.enable_auto_range_btn.setPixmap(QtGui.QPixmap(os.path.join(path,'autorange_toggle_'+('on' if s else 'off')+'.png')))
+        
     def resizeEvent(self, ev):
         ## Set the position of the label
         nudge = 5
@@ -119,10 +142,14 @@ class AxisItem(pg.AxisItem):
             self.aset_lmt_btns[0].setPos(x1,0)
             self.aset_lmt_btns[1].setPos(xm1,0)
             self.enable_auto_range_btn.setPos(x2,0)
+            
     def set_lmt_btn_clicked(self,type):
-        value,ok=QtGui.QInputDialog.getDouble(self.parent(),self.label.toPlainText(),('Lower','Upper')[type]+' limit:',self.range[type],decimals=6)
+        # TODO bug here - sometimes the dialog doesn't show the right range
+        logger.debug('range[type]=%s',self.range[type])
+        value,ok=QtGui.QInputDialog.getDouble(self.parent(),self.label.toPlainText(),('Lower','Upper')[type]+' limit:',self.range[type],decimals=3)
         if ok:
             self.set_view_range(type,value)
+            
     def aset_lmt_btn_clicked(self,type):
         v=self.linkedView()
         if v==None:
@@ -139,12 +166,13 @@ class AxisItem(pg.AxisItem):
                 v=bounds.left()
             else:
                 v=bounds.right()
-        self.set_view_range(type,v)        
+        self.set_view_range(type,v)    
+            
     def set_view_range(self,type,value):
         v=self.linkedView()
         if v==None:
             range=self.range
-            range[type]=v
+            range[type]=value
             self.setRange(*range)
         else:
             ranges=v.viewRange()
@@ -156,6 +184,13 @@ class AxisItem(pg.AxisItem):
                 range=ranges[0]
                 range[type]=value
                 v.setRange(xRange=range,padding=0)
+                
+    def setRange(self,mn,mx):
+        # Override superclass method to emit signal
+        super().setRange(mn,mx)
+        self.range_changed.emit()
+        
+                
     def enable_auto_range_btn_clicked(self):
         v=self.linkedView()
         if v==None:
@@ -165,6 +200,9 @@ class AxisItem(pg.AxisItem):
         else:
             v.enableAutoRange(self.axis())
         #self.auto_range_enabled=not self.auto_range_enabled
+        
+    def setButtonsEnabled(self,enabled):
+        self.buttons_enabled=enabled
         
     def hoverEvent(self, ev):
         if ev.enter:
@@ -176,7 +214,7 @@ class AxisItem(pg.AxisItem):
     def updateButtons(self):
         btns=self.set_lmt_btns+self.aset_lmt_btns+[self.enable_auto_range_btn]
         try:
-            if self.mouseHovering and self._exportOpts is False:
+            if self.mouseHovering and self._exportOpts is False and self.buttons_enabled:
                 for btn in btns:
                     btn.show()
             else:

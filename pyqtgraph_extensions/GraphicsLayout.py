@@ -94,6 +94,7 @@ class GraphicsLayoutWidget(pg.GraphicsView,IPythonPNGRepr):
         'removeItem', 'itemIndex', 'addAlignedPlot', 'nextRows', 'nextCols', 'addColorBar', 'nextRows', 'addHorizontalSpacer', 'addVerticalSpacer', 'setRowStretchFactor', 'setColumnStretchFactor']:
             setattr(self, n, getattr(self.ci, n))
         self.setCentralItem(self.ci)
+        
     def clear(self):
         self.ci.clear()
         # Remove additional top-level items in scene

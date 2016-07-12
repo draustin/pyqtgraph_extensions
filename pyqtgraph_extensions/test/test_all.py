@@ -1,8 +1,31 @@
+import os,logging
 import pyqtgraph as pg
 from pyqtgraph import QtGui,QtCore
 import pyqtgraph_extensions as pgx
 import numpy as np
-import os
+
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger(pgx.__name__).setLevel(level=logging.DEBUG)
+
+def test_ColorBarItem_manual():
+    ##
+    glw=pg.GraphicsLayoutWidget()
+    plt=glw.addPlot(title='Testing colormaps',labels={'left':'y','bottom':'x'})
+    im=pgx.ImageItem()
+    im.setLookupTable(pgx.get_colormap_lut())
+    x=np.arange(100)-50
+    y=np.arange(110)[:,None]-55
+    z=5e9*np.exp(-(x**2+y**2)/100.0)
+    im.setImage(z+np.random.random(z.shape))
+    plt.addItem(im)
+    cb=pgx.ColorBarItem()
+    cb.setManual(lut=im.lut,levels=im.levels)
+    #cb.setLabel('intensity')
+    glw.addItem(cb)
+    glw.show()
+    ##
+    return glw
+
 
 def test_ColorBarItem():
     ##
@@ -189,7 +212,7 @@ def test_all():
 if __name__=="__main__":
     if QtCore.QCoreApplication.instance() is not None:
         app = QtGui.QApplication([])
-    test_all()
+    #test_all()
     #f=test_AnchoredPlotItem()
-    
+    f=test_ColorBarItem_manual()
     

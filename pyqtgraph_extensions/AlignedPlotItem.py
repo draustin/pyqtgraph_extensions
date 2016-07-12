@@ -308,3 +308,11 @@ class AlignedPlotItem(QtCore.QObject):
         if y is not None:
             self.log_y=y
         self.updateLogMode()
+        
+    def close(self):
+        for k in self.axes:
+            i = self.axes[k]['item']
+            i.close()
+        self.axes = None
+        self.scene().removeItem(self.vb)
+        self.vb = None

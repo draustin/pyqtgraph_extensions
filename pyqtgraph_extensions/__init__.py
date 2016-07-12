@@ -1,8 +1,8 @@
 """Extensions and improvements to pyqtgraph.
 """
+import os,sys
 import pyqtgraph as pg
 from pyqtgraph import QtGui,QtCore
-import os
 import pyqtgraph.exporters as pgex
 from scipy.interpolate import interp1d
 from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
@@ -81,7 +81,7 @@ def get_colormap_lut(name='flame'):
     vu=np.arange(n)/n
     return interp1d(v,c,axis=0)(vu)
     
-def add_right_axis(plti,pen=None,label=None):
+def add_right_axis(plti,pen=None,label=None,enableMenu=False):
     """Add right-hand axis to pg.PlotItem.
     Following examples/MultiplePlotAxes. Returns a pyqtgraph_ex.ViewBox which is
     just a normal pyqtgraph.ViewBox with convenience plotting functions.
@@ -95,7 +95,7 @@ def add_right_axis(plti,pen=None,label=None):
     """
     if isinstance(plti,pg.PlotWidget):
         plti=plti.plotItem
-    vb=ViewBox()
+    vb=ViewBox(enableMenu=enableMenu)
     plti.showAxis('right')
     #vb.setParentItem(plti) - no, mucks up coordinate system
     plti.scene().addItem(vb)
@@ -146,9 +146,15 @@ def addLegend(plot,**kwargs):
     plot.legend.setParentItem(plot.vb)
     return plot.legend
 
-def export(o,filename,fmt='png',mkdir=False,fmt_opts={}):
+# todo: option to remove margins of GraphicsLayouts:
+# Necessary for bitmap output (PDF is cropped somehow)
+# See http://stackoverflow.com/questions/27092164/margins-in-pyqtgraphs-graphicslayout
+# and
+# http://comments.gmane.org/gmane.comp.python.pyqtgraph/234
+def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
     # If a list of formats, process one by one
     if not isinstance(fmt,basestring):
+        raise NotImplementedError('Decided not to accept multiple formats...')
         fmts=fmt
         for fmt in fmts:
             export(o,filename,fmt,mkdir,fmt_opts)
@@ -180,8 +186,11 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={}):
         item=o
     else:
         raise ValueError('Don''t know how to export it')
-    if fmt=='png':
-        pgex.ImageExporter(item).export(filename+'.'+fmt)
+    if fmt in ('png','tif'):
+        exporter=pgex.ImageExporter(item)
+        for key,value in exporter_params.items():
+            exporter.parameters()[key]=value
+        exporter.export(filename+'.'+fmt)
     elif fmt=='svg':
         pgex.SVGExporter(item).export(filename+'.'+fmt)
     elif fmt in ('pdf','eps'):
@@ -197,6 +206,8 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={}):
                 data=data.replace(b'Interpolate true',b'Interpolate false')
                 with open(filename+'.'+fmt,"wb") as f:
                     f.write(data)
+    else:
+        raise ValueError('Unknown format %s'%fmt)
         
 def close_all():
     """Shortcut for QApplication.closeAllWindows."""
@@ -297,6 +308,19 @@ class AnchoredPlotItem(pg.PlotItem,pg.GraphicsWidgetAnchor):
         self.resize(*size)
 
 from .GraphicsLayout import *
+
+# somehow these cause crashing when exiting...
+# def make_application():
+#     global application
+#     if QtGui.QApplication.instance() is None:
+#         application=QtGui.QApplication(sys.argv)
+#     else:
+#         application=None
+#         
+# def exec_application():
+#     global application
+#     if application is not None:
+#         sys.exit(application.exec_())
     
 # Probably won't be necessary:
 # class  QGraphicsLayoutSpacer(QtGui.QGraphicsLayoutItem):

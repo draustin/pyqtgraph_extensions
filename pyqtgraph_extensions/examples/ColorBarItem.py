@@ -24,7 +24,11 @@ def update():
     t=pg.time()
     # Create amplitude-modulated noisy Gaussian
     z=np.sin(t)**2*z_0+np.random.random(z_0.shape)*0.1
-    im.setImage(z)
+    levels=im.levels
+    if levels is not None:
+        im.setImage(z,levels=levels)
+    else:
+        im.setImage(z)
     
 update()
 glw.show()
