@@ -27,7 +27,7 @@ def test_ColorBarItem_manual():
     return glw
 
 
-def test_ColorBarItem():
+def test_ColorBarItem_auto():
     ##
     glw=pg.GraphicsLayoutWidget()
     plt=glw.addPlot(title='Testing colormaps',labels={'left':'y','bottom':'x'})
@@ -201,18 +201,15 @@ def test_AnchoredPlotItem():
     return glw
 
 def test_all():
-    ret_vals=[fun() for fun in (test_ColorBarItem,
+    ret_vals=[fun() for fun in (test_ColorBarItem_manual,test_ColorBarItem_auto,
     test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem)]
-    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),('png','svg'))
+    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),'png')
     pgx.close_all()
-    
-
-    
-    
+        
 if __name__=="__main__":
     if QtCore.QCoreApplication.instance() is not None:
         app = QtGui.QApplication([])
-    #test_all()
+    test_all()
     #f=test_AnchoredPlotItem()
-    f=test_ColorBarItem_manual()
+    #f=test_ColorBarItem_auto()
     

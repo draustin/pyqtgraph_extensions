@@ -46,7 +46,7 @@ class ImageItem(pg.ImageItem):
         Only the first format is compatible with lookup tables. See :func:`makeARGB <pyqtgraph.makeARGB>`
         for more details on how levels are applied.
         """
-        emit=np.any(self.levels != levels)
+        emit=self.levels is None or not np.allclose(self.levels,levels)
         pg.ImageItem.setLevels(self, levels, update)
         if emit:
             self.sigLevelsChanged.emit()
@@ -63,6 +63,17 @@ class ImageItem(pg.ImageItem):
         """
         pg.ImageItem.setLookupTable(self, lut, update)
         self.sigLookupTableChanged.emit()
+    
+    def setImage(self,image=None,autoLevels=True,levels=None,**kwargs):
+        """Add behaviour that if autoLevels is False and levels is None, levels
+        is set to current (if that is not None). (In original, this causes an error.)"""
+        if levels is None and not autoLevels:
+            if self.levels is not None:
+                logger.debug('setImage retaining levels')
+                levels=self.levels
+            else:
+                autoLevels=True
+        pg.ImageItem.setImage(self,image=image,autoLevels=autoLevels,levels=levels,**kwargs)
         
 class LegendItem(pg.LegendItem):
     """
@@ -119,6 +130,11 @@ class ColorBarItem(pg.GraphicsWidget):
     self.image, which must be a pgx.ImageItem. It responds to changes in the
     image's lookup table, levels and range. The user can adjust the axis with the
     mouse like a normal axis. Autoscaling works.
+    
+    The implementation uses a viewbox containing an imageitem with an axisitem
+    beside it. The imageitem vertical extent is set to the color range of the image.
+    In this way, the autorange functionality of the viewbox and axisitem are
+    put to use. It's probably not optimally efficient.
     """
     def __init__(self,parent=None,image=None,label=None):
         pg.GraphicsWidget.__init__(self,parent)
@@ -169,9 +185,10 @@ class ColorBarItem(pg.GraphicsWidget):
             self.update()
             self.lookupTableChanged()
             self.imageRangeChanged()
-            self.image.sigLevelsChanged.connect(self.updateBarLevels)
+            self.image.sigLevelsChanged.connect(self.imageLevelsChanged)
             self.image.sigImageChanged.connect(self.imageRangeChanged)
             self.image.sigLookupTableChanged.connect(self.lookupTableChanged)
+            #self.vb.enableAutoRange(axis=1)
         else:
             self.updateManual()
         self.vb.setMouseEnabled(y=self.image is not None)
@@ -191,6 +208,12 @@ class ColorBarItem(pg.GraphicsWidget):
         logger.debug('setting bar extent to %g,%g',self.image_min,self.image_max)
         self.bar.setRect(QtCore.QRectF(0,self.image_min,1,self.image_max-self.image_min))
         self.updateBarLevels()
+        
+    def imageLevelsChanged(self):
+        self.updateBarLevels()
+        if not np.allclose(self.vb.viewRange()[1],self.image.levels):
+            logger.debug('setYRange %g,%g',*self.image.levels)
+            self.vb.setYRange(*self.image.levels)
         
     def updateBarLevels(self):
         """Update the levels of the bar ImageItem from the image.
