@@ -1,10 +1,33 @@
+import os,logging
 import pyqtgraph as pg
 from pyqtgraph import QtGui,QtCore
 import pyqtgraph_extensions as pgx
 import numpy as np
-import os
 
-def test_ColorBarItem():
+logging.basicConfig(level=logging.DEBUG)
+logging.getLogger(pgx.__name__).setLevel(level=logging.DEBUG)
+
+def test_ColorBarItem_manual():
+    ##
+    glw=pg.GraphicsLayoutWidget()
+    plt=glw.addPlot(title='Testing colormaps',labels={'left':'y','bottom':'x'})
+    im=pgx.ImageItem()
+    im.setLookupTable(pgx.get_colormap_lut())
+    x=np.arange(100)-50
+    y=np.arange(110)[:,None]-55
+    z=5e9*np.exp(-(x**2+y**2)/100.0)
+    im.setImage(z+np.random.random(z.shape))
+    plt.addItem(im)
+    cb=pgx.ColorBarItem()
+    cb.setManual(lut=im.lut,levels=im.levels)
+    #cb.setLabel('intensity')
+    glw.addItem(cb)
+    glw.show()
+    ##
+    return glw
+
+
+def test_ColorBarItem_auto():
     ##
     glw=pg.GraphicsLayoutWidget()
     plt=glw.addPlot(title='Testing colormaps',labels={'left':'y','bottom':'x'})
@@ -178,18 +201,15 @@ def test_AnchoredPlotItem():
     return glw
 
 def test_all():
-    ret_vals=[fun() for fun in (test_ColorBarItem,
+    ret_vals=[fun() for fun in (test_ColorBarItem_manual,test_ColorBarItem_auto,
     test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem)]
-    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),('png','svg'))
+    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),'png')
     pgx.close_all()
-    
-
-    
-    
+        
 if __name__=="__main__":
     if QtCore.QCoreApplication.instance() is not None:
         app = QtGui.QApplication([])
     test_all()
     #f=test_AnchoredPlotItem()
-    
+    #f=test_ColorBarItem_auto()
     

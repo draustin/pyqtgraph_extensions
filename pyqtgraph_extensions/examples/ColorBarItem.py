@@ -5,6 +5,10 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph_extensions as pgx
 
+# import logging
+# logging.basicConfig(level=logging.DEBUG)
+# logging.getLogger(pgx.__name__).setLevel(level=logging.DEBUG)
+
 # Generate 2D Gaussian distribution
 x=np.arange(100)-50
 y=np.arange(110)[:,None]-55
@@ -24,9 +28,11 @@ def update():
     t=pg.time()
     # Create amplitude-modulated noisy Gaussian
     z=np.sin(t)**2*z_0+np.random.random(z_0.shape)*0.1
-    im.setImage(z)
-    
+    levels=im.levels
+    im.setImage(z,autoLevels=False)
 update()
+# The first setImage disables autorange...
+cb.vb.enableAutoRange(1)
 glw.show()
 
 
