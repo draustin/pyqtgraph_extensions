@@ -157,7 +157,7 @@ class ColorBarItem(pg.GraphicsWidget):
         # Setup colorbar, implemented as an ImageItem
         self.bar=pg.ImageItem()
         # The color bar ImageItem levels run from 0 to 1
-        self.bar.setImage(np.linspace(0,1,256)[None,:])
+        self.bar.setImage(np.linspace(0,1,512)[None,:])
         self.vb.addItem(self.bar)
         self.layout.addItem(self.vb,0,0)    
         # Setup axis  
