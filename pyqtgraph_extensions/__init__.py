@@ -8,7 +8,6 @@ from scipy.interpolate import interp1d
 from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
 import numpy as np
 import subprocess
-import os_ex
 
 from .AxisItem import *
 from .misc import *
@@ -164,7 +163,7 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
     if len(dir)>0:
         if not os.path.isdir(dir):
             if mkdir:
-                os_ex.ensure_dir(dir)
+                os_ex.mkdir(dir)
             else:
                 raise ValueError('Path %s doesn''t exist'%dir)
    
