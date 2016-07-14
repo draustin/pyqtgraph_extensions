@@ -10,4 +10,5 @@ setup(name="pyqtgraph_extensions",
       license='BSD',
       packages=['pyqtgraph_extensions', 'pyqtgraph_extended'],
       requires=['pyqtgraph'],
+      package_data={'pyqtgraph_extensions':['*.png']}
 )

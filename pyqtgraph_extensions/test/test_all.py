@@ -207,7 +207,7 @@ def test_all():
     pgx.close_all()
         
 if __name__=="__main__":
-    if QtCore.QCoreApplication.instance() is not None:
+    if QtCore.QCoreApplication.instance() is None:
         app = QtGui.QApplication([])
     test_all()
     #f=test_AnchoredPlotItem()
