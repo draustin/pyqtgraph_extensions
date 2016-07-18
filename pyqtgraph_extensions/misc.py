@@ -2,6 +2,7 @@ import logging
 import pyqtgraph as pg
 import pyqtgraph.functions as fn
 import numpy as np
+import mathx
 from . import AxisItem
 from pyqtgraph import QtCore,QtGui
 
@@ -222,8 +223,8 @@ class ColorBarItem(pg.GraphicsWidget):
         image_levels=self.image.levels
         if not hasattr(self,'image_max'):
             return
-        image_range=self.image_max-self.image_min            
-        bar_levels=(image_levels[0]-self.image_min)/image_range,(image_levels[1]-self.image_min)/image_range
+        image_range=self.image_max-self.image_min   
+        bar_levels=mathx.divide0(image_levels[0]-self.image_min,image_range),mathx.divide0(image_levels[1]-self.image_min,image_range)
         logger.debug('setting bar levels to %g,%g',*bar_levels)
         self.bar.setLevels(bar_levels)
     
