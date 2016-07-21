@@ -180,7 +180,7 @@ class ColorBarItem(pg.GraphicsWidget):
         
     def setImage(self,image):
         if self.image is not None:
-            print('TODO disconnect')
+            raise NotImplementedError('disconnect')
         self.image=image
         if self.image is not None:
             self.update()
@@ -242,7 +242,7 @@ class ColorBarItem(pg.GraphicsWidget):
             self.updateManual()
             
     def axis_to_levels(self):
-        if self.image is None:
+        if self.image is None or self.image.levels is None:
             return
         if not np.allclose(self.image.levels,self.axis.range):
             logger.debug('axis_to_levels: axis.range=%g,%g',*self.axis.range)
