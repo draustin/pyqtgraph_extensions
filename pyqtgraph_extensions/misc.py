@@ -203,6 +203,9 @@ class ColorBarItem(pg.GraphicsWidget):
         self.vb.setMouseEnabled(y=self.images!=())
         self.axis.setButtonsEnabled(self.images!=())
         
+    def setImage(self,image):
+        self.setImages((image,))
+        
     def lookupTableChanged(self,image):
         """Sets the lookup table based on zeroth image."""
         self.bar.setLookupTable(image.lut)
