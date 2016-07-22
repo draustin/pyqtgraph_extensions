@@ -45,6 +45,28 @@ def test_ColorBarItem_auto():
     ##
     return glw
     
+def test_ColorBarItem_auto_multi():
+    ##
+    glw=pg.GraphicsLayoutWidget()
+    def make_image():
+        plt=glw.addPlot(title='Testing colormaps',labels={'left':'y','bottom':'x'})
+        im=pgx.ImageItem()
+        im.setLookupTable(pgx.get_colormap_lut())
+        x=np.arange(100)-50
+        y=np.arange(110)[:,None]-55
+        z=5e9*np.exp(-(x**2+y**2)/100.0)
+        im.setImage(z+np.random.random(z.shape))
+        plt.addItem(im)
+        glw.nextRow()
+        return im
+    images=[make_image() for _ in range(3)]
+    cb=pgx.ColorBarItem(images=images)
+    #cb.setLabel('intensity')
+    glw.addItem(cb,col=3,row=0,rowspan=8)
+    glw.show()
+    ##
+    return glw
+    
 def test_add_right_axis():
     ##
     left_pen=(255,0,0)
@@ -202,8 +224,10 @@ def test_AnchoredPlotItem():
 
 def test_all():
     ret_vals=[fun() for fun in (test_ColorBarItem_manual,test_ColorBarItem_auto,
-    test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem)]
-    pgx.export(ret_vals[-3],os.path.join(os.path.expanduser('~'),'test'),'png')
+    test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,
+    test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem,
+    test_ColorBarItem_auto_multi)]
+    pgx.export(ret_vals[-4],os.path.join(os.path.expanduser('~'),'test'),'png')
     pgx.close_all()
         
 if __name__=="__main__":
