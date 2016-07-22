@@ -148,6 +148,7 @@ class ColorBarItem(pg.GraphicsWidget):
         if image is not None:
             assert images==()
             images=(image,)
+        images=tuple(images)
         # Setup layout
         self.layout = QtGui.QGraphicsGridLayout()
         self.layout.setHorizontalSpacing(0)
