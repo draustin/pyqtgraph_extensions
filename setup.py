@@ -8,7 +8,7 @@ setup(name="pyqtgraph_extensions",
       author_email='dane_austin@fastmail.com.au',
       url='https://bitbucket.org/draustin/pyqtgraph_extensions',
       license='BSD',
-      packages=['pyqtgraph_extensions', 'pyqtgraph_extended'],
+      packages=find_packages(),#['pyqtgraph_extensions', 'pyqtgraph_extended'],
       requires=['pyqtgraph'],
       package_data={'pyqtgraph_extensions':['*.png']}
 )

@@ -24,6 +24,7 @@ def test_ColorBarItem_manual():
     glw.addItem(cb)
     glw.show()
     ##
+    assert np.allclose(cb.axis.range,im.levels)
     return glw
 
 

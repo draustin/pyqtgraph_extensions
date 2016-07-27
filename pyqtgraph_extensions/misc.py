@@ -259,8 +259,7 @@ class ColorBarItem(pg.GraphicsWidget):
     def setManual(self,lut=None,levels=None):
         self.manual_levels=levels
         self.manual_lut=lut
-        if self.images!=():
-            self.updateManual()
+        self.updateManual()
             
     def axis_to_levels(self):
         logger.debug('axis_to_levels: axis.range=%g,%g',*self.axis.range)
