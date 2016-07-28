@@ -112,7 +112,7 @@ def add_right_axis(plti,pen=None,label=None,enableMenu=False):
     plti.vb.sigResized.connect(updateViews)
     return vb
     
-def add_top_axis(plti,pen=None,label=None):
+def add_top_axis(plti,pen=None,label=None,enableMenu=False):
     """Add top axis to pg.PlotItem.
     Following examples/MultiplePlotAxes. Returns a pyqtgraph_ex.ViewBox which is
     just a normal pyqtgraph.ViewBox with convenience plotting functions.
@@ -121,7 +121,7 @@ def add_top_axis(plti,pen=None,label=None):
     """
     if isinstance(plti,pg.PlotWidget):
         plti=plti.plotItem
-    vb=ViewBox()
+    vb=ViewBox(enableMenu=enableMenu)
     plti.showAxis('top')
     plti.scene().addItem(vb)
     axis=plti.getAxis('top')
