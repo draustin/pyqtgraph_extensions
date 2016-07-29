@@ -1,8 +1,15 @@
 """Demo add_right_axis, allowing a right-hand y-axis with the same x-axis."""
+import sys
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph_extensions as pgx
+
+if QtGui.QApplication.instance() is None:
+    qapp=QtGui.QApplication(sys.argv)
+else:
+    # Presumably running in a GUI with event QApplication already created
+    qapp=None
 
 # 2D Gaussian
 x=np.linspace(-20,20,100)
@@ -27,9 +34,5 @@ im=plt2.image(z,rect=pgx.axes_to_rect(x,y))
 gl.addColorBar(image=im,rel_row=2)
 gl.show()
 
-
-## Start Qt event loop unless running in interactive mode or using pyside.
-if __name__ == '__main__':
-    import sys
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+if qapp is not None:
+    sys.exit(qapp.exec_())

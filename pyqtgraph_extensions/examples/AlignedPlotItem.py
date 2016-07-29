@@ -1,9 +1,16 @@
 """Illustrate AlignedPlotItem, which uses its parent graphics layout for its
 internal elements. This allows them to be aligned with other items in the
 layout."""
+import sys
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph_extensions as pgx
+
+if QtGui.QApplication.instance() is None:
+    qapp=QtGui.QApplication(sys.argv)
+else:
+    # Presumably running in a GUI with event QApplication already created
+    qapp=None
 
 # Original GraphicsLayoutWidget with PlotItems. The label of the left axis
 # of the first PlotItem is two lines, the left axes of the PlotItems aren't 
@@ -24,9 +31,5 @@ glx.nextRows() # defaults to 4x glx.nextRow()
 aplt2=glx.addAlignedPlot(labels={'left':'y (units)','bottom':'x'},title='AlignedPlotItem 2')
 glx.show()
 
-
-## Start Qt event loop unless running in interactive mode or using pyside.
-if __name__ == '__main__':
-    import sys
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+if qapp is not None:
+    sys.exit(qapp.exec_())

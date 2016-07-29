@@ -1,9 +1,16 @@
 """Illustrate ColorBarItem, a MATLAB-like color bar suited for non-interactive
 publication plots."""
+import sys
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph_extensions as pgx
+
+if QtGui.QApplication.instance() is None:
+    qapp=QtGui.QApplication(sys.argv)
+else:
+    # Presumably running in a GUI with event QApplication already created
+    qapp=None
 
 # import logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -40,8 +47,5 @@ timer = QtCore.QTimer()
 timer.timeout.connect(update)
 timer.start(50)
 
-## Start Qt event loop unless running in interactive mode or using pyside.
-if __name__ == '__main__':
-    import sys
-    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-        QtGui.QApplication.instance().exec_()
+if qapp is not None:
+    sys.exit(qapp.exec_())
