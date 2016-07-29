@@ -25,7 +25,7 @@ The extensions include:
 See pyqtgraph_extensions/examples for some examples.
 
 
-## How to make it work on raspberry pi
+## (Notes to self) How to make it work on raspberry pi
 
 ```
 sudo apt-get install libblas-dev
