@@ -1,0 +1,18 @@
+# Conda environment for testing pyqtgraph_extensions
+# To set up this environment, install Miniconda, download this file, and then at the command line type:
+#	conda env create -f=conda_test_env.yml
+# To activate it type
+#	activate pyqtgraph_extended
+name: pyqtgraph_extended
+dependencies:
+- numpy
+- pyqt
+- scipy
+- pyyaml
+- ipython
+- ipython-notebook
+- pyopengl
+- pip:
+  - git+https://github.com/pyqtgraph/pyqtgraph.git
+  - hg+https://bitbucket.org/draustin/pyqtgraph_extensions
+
