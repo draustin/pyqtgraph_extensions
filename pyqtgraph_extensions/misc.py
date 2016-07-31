@@ -244,7 +244,7 @@ class ColorBarItem(pg.GraphicsWidget):
             # range has not been set yet
             return
         image_range=self.image_max-self.image_min 
-        if image_range!=0:
+        if image_range==0:
             bar_levels=0,0
         else:
             bar_levels=(image_levels[0]-self.image_min)/image_range,(image_levels[1]-self.image_min)/image_range
