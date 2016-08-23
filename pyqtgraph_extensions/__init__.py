@@ -64,7 +64,7 @@ tableau20=[ (31, 119, 180),
             (219, 219, 141), 
             (23, 190, 207),
             (158, 218, 229)] 
-
+            
 def get_colormap_lut(name='flame'):
     """Get lookup table from one of pyqtgraph's gradient editor's presets.
     
@@ -256,7 +256,9 @@ def axes_to_rect(x,y):
     """
     x=np.array(x).squeeze()
     y=np.array(y).squeeze()
-    return QtCore.QRectF(x[0],y[0],x[-1]-x[0],y[-1]-y[0])
+    Dx=x[1]-x[0]
+    Dy=y[1]-y[0]
+    return QtCore.QRectF(x[0]-Dx/2,y[0]-Dy/2,x[-1]-x[0]+Dx,y[-1]-y[0]+Dy)
     
 def image_axes(x,y,im,parent=None,**kwargs):
     if parent is None:

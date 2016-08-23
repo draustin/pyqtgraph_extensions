@@ -201,6 +201,10 @@ class ColorBarItem(pg.GraphicsWidget):
             self.updateManual()
         self.vb.setMouseEnabled(y=self.images!=())
         self.axis.setButtonsEnabled(self.images!=())
+        # Found that without this, setting an image after ColorBarItem.__init__
+        # was triggering an update auto range in the AxisItem, which screwed
+        # up the level setting. Updating clears the ViewBox's internal flag.
+        self.vb.updateAutoRange()
         
     def setImage(self,image):
         self.setImages((image,))
@@ -231,7 +235,7 @@ class ColorBarItem(pg.GraphicsWidget):
     def imageLevelsChanged(self,image):
         if not np.allclose(self.vb.viewRange()[1],image.levels):
             logger.debug('setYRange %g,%g',*image.levels)
-            self.vb.setYRange(*image.levels)
+            self.vb.setYRange(*image.levels,padding=0)
         self.updateBarLevels()
         
     def updateBarLevels(self):
