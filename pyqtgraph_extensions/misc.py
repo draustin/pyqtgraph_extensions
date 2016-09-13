@@ -88,10 +88,16 @@ class LegendItem(pg.LegendItem):
             border_color=pg.CONFIG_OPTIONS['foreground']
         self.background_color=background_color
         self.border_color=border_color
+        
     def paint(self, p, *args):
         p.setPen(fn.mkPen(self.border_color))
         p.setBrush(fn.mkBrush(self.background_color))
         p.drawRect(self.boundingRect())
+        
+    def setTextStyle(self,*args,**kwargs):
+        """Arguments passed on to setText of every LabelItem."""
+        for sample,label in self.items:
+            label.setText(label.text,*args,**kwargs)
 
 class ViewBox(pg.ViewBox):
     """Convenience extension of ViewBox providing:
