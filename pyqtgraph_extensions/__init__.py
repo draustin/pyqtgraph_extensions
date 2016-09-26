@@ -25,6 +25,11 @@ pg.setConfigOption('foreground', 'k')
 #print(QtGui.QApplication.font().family())
 if QtGui.QApplication.font().family()=='Ubuntu':
     QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+
+# Greek letters in PDF export on Windows look shite - tried this but didn't fix it
+# if QtGui.QApplication.font().family()=="MS Shell Dlg 2":
+#     QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+
 # Note that for changing the font size, found that
 # pg.QtGui.QApplication.font().setPointSize(12) 
 # doesn't work whereas

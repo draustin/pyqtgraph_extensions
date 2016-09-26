@@ -316,3 +316,8 @@ class AlignedPlotItem(QtCore.QObject):
         self.axes = None
         self.scene().removeItem(self.vb)
         self.vb = None
+        
+    def setXYLink(self,other):
+        """Shorthand for calling setXLink and setYLink in sequence."""
+        self.setXLink(other)
+        self.setYLink(other)
