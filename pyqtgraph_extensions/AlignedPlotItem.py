@@ -174,8 +174,12 @@ class AlignedPlotItem(QtCore.QObject):
                 item.setRect(rect)
             except AttributeError:
                 item.setRect(QtCore.QRectF(*rect))
+        levels=kwargs.get('levels',None)
+        if levels is not None:
+            item.setLevels(levels)
         self.addItem(item)
         return item
+        
     def setLabel(self, axis, text=None, units=None, unitPrefix=None, **args):
         """
         Set the label for an axis. Basic HTML formatting is allowed.
