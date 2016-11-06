@@ -147,6 +147,12 @@ def addLegend(plot,**kwargs):
     kwargs passed on to LegendItem.__init__. This function is necessary to use
     pyqtgraph_extensions.LegendItem instead of pyqtgraph's original one."""
     plot.legend = LegendItem(**kwargs)
+    # Attempted hack to allow adding legends to ViewBox...
+    # if hasattr(plot,'vb'):
+    #     vb=plot.vb
+    # else:
+    #     vb=plot
+    # doesn't work.
     plot.legend.setParentItem(plot.vb)
     return plot.legend
 
