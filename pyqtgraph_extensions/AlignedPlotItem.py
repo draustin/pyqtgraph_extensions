@@ -10,6 +10,10 @@ class AlignedPlotItem(QtCore.QObject):
     sigXRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox X range has changed          
             
     def __init__(self, layout, origin=(0,0), name=None, labels=None, title=None, viewBox=None, axisItems=None, create=None, **kargs):
+        """
+        Note: supplied axisItems are not added to the layout. This allows for manual
+            placement
+        """
         QtCore.QObject.__init__(self)
         self.layout=layout
         if create is None:
@@ -43,7 +47,8 @@ class AlignedPlotItem(QtCore.QObject):
                 axis = AxisItem(orientation=k)
             axis.linkToView(self.vb)
             self.axes[k] = {'item': axis, 'pos': pos}
-            self.layout.addItem(axis,row=origin[0]+pos[0],col=origin[1]+pos[1])
+            if k not in axisItems: # 8/11/2016 hack to allow  external positioning of axes
+                self.layout.addItem(axis,row=origin[0]+pos[0],col=origin[1]+pos[1])
             # Dane: found this necessary
             self.layout.layout.setAlignment(axis,alignment)
             axis.setZValue(-1000)
