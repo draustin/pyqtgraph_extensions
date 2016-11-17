@@ -241,7 +241,11 @@ class ColorBarItem(pg.GraphicsWidget):
     def imageLevelsChanged(self,image):
         if not np.allclose(self.vb.viewRange()[1],image.levels):
             logger.debug('setYRange %g,%g',*image.levels)
-            self.vb.setYRange(*image.levels,padding=0)
+            assert len(image.levels)==2
+            if all(np.isfinite(image.levels)):
+                self.vb.setYRange(*image.levels,padding=0)
+            else:
+                logger.info('skipping setYRange because np.levels is %s'%str(image.levels))
         self.updateBarLevels()
         
     def updateBarLevels(self):
