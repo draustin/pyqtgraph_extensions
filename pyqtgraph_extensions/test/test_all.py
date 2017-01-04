@@ -240,12 +240,20 @@ def do_all_tests():
     test_ColorBarItem_auto_multi,test_LegendItem)]
     pgx.export(ret_vals[-4],os.path.join(os.path.expanduser('~'),'test'),'png')
     pgx.close_all()
-        
+    
+def test_export():
+    ##
+    glw=pgx.GraphicsLayoutWidget()
+    plt=glw.addAlignedPlot(labels={'left':'y'})
+    plt.plot([1,2],[3,4])
+    glw.show()
+    pgx.export(glw,'test','svg-pdf-png')
+    ##
 if __name__=="__main__":
     if QtCore.QCoreApplication.instance() is None:
         app = QtGui.QApplication([])
     #test_all()
     #f=test_AnchoredPlotItem()
     #f=test_ColorBarItem_auto()
-    test_LegendItem(None)
-    
+    #test_LegendItem(None)
+    test_export()

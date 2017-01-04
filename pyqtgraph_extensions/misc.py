@@ -80,7 +80,15 @@ class LegendItem(pg.LegendItem):
     Customisation subclass of pyqtgraph.LegendItem for:
         * control over background color - defaults to pyqtgraph's default
     """
-    def __init__(self, size=None, offset=None,background_color=None,border_color=None):
+    def __init__(self, size=None, offset=None,background_color=None,border_color=None,margins=None,vertical_spacing=None):
+        """
+        Args:
+            margins (left,top,right,bottom): if not None, set layout margins. 
+                (0,0,0,0) is usually a good choice. If None, uses pyqtgraph
+                defaults
+            vertical_spacing (int): if not None, set vertical spacing between items.
+                0 is a good choice. If None, use pyqtgraph default.
+        """
         pg.LegendItem.__init__(self,size,offset)
         if background_color is None:
             background_color=pg.CONFIG_OPTIONS['background']
@@ -88,6 +96,10 @@ class LegendItem(pg.LegendItem):
             border_color=pg.CONFIG_OPTIONS['foreground']
         self.background_color=background_color
         self.border_color=border_color
+        if margins is not None:
+            self.layout.setContentsMargins(*margins)
+        if vertical_spacing is not None:
+            self.layout.setVerticalSpacing(vertical_spacing)
         
     def paint(self, p, *args):
         p.setPen(fn.mkPen(self.border_color))
@@ -98,6 +110,20 @@ class LegendItem(pg.LegendItem):
         """Arguments passed on to setText of every LabelItem."""
         for sample,label in self.items:
             label.setText(label.text,*args,**kwargs)
+            
+    def updateSize(self):
+        # Modified from pyqtgraph's original to use minimumWidth() rather than
+        # width() on items (likewise for height), to prevent runaway growth of 
+        # legend with repeated calling of updateSize
+        if self.size is not None:
+            return
+        margins=self.layout.getContentsMargins()
+        height = margins[1]
+        width = margins[0]
+        for sample, label in self.items:
+            height += max(sample.minimumHeight(), label.minimumHeight()) + self.layout.verticalSpacing()
+            width = max(width, sample.minimumWidth()+label.minimumWidth())
+        self.setGeometry(0, 0, width+margins[2], height+margins[3]) # D
 
 class ViewBox(pg.ViewBox):
     """Convenience extension of ViewBox providing:

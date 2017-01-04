@@ -203,19 +203,28 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
         exporter.export(filename+'.'+fmt)
     elif fmt=='svg':
         pgex.SVGExporter(item).export(filename+'.'+fmt)
-    elif fmt in ('pdf','eps'):
+    elif fmt in ('svg','pdf','eps','svg-png','svg-pdf-png'):
         # generate svg
         pgex.SVGExporter(item).export(filename+'.'+'svg') 
-        # Convert to eps/pdf
-        subprocess.call(['inkscape','--export-'+fmt+'='+filename+'.'+fmt,'--export-area-drawing',filename+'.svg'])
-        if fmt=='pdf':
-            if not fmt_opts.get('interpolate',False):
-                # Stop ugly interpolation of bitmaps
-                with open(filename+'.'+fmt,"rb") as f:
-                    data = f.read()
-                data=data.replace(b'Interpolate true',b'Interpolate false')
-                with open(filename+'.'+fmt,"wb") as f:
-                    f.write(data)
+        # Convert from svg to required
+        def convert(final_fmt):
+            subprocess.call(['inkscape','--export-'+final_fmt+'='+filename+'.'+final_fmt,
+                '--export-area-drawing',filename+'.svg','--export-dpi=300'])
+            if final_fmt=='pdf':
+                if not fmt_opts.get('interpolate',False):
+                    # Stop ugly interpolation of bitmaps
+                    with open(filename+'.'+final_fmt,"rb") as f:
+                        data = f.read()
+                    data=data.replace(b'Interpolate true',b'Interpolate false')
+                    with open(filename+'.'+final_fmt,"wb") as f:
+                        f.write(data)
+        if fmt in ('pdf','eps'):
+            convert(fmt)
+        elif fmt=='svg-png':
+            convert('png')
+        elif fmt=='svg-pdf-png':
+            convert('png')
+            convert('pdf')
     else:
         raise ValueError('Unknown format %s'%fmt)
         
