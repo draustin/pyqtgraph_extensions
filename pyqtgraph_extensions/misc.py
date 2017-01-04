@@ -78,7 +78,8 @@ class ImageItem(pg.ImageItem):
 class LegendItem(pg.LegendItem):
     """
     Customisation subclass of pyqtgraph.LegendItem for:
-        * control over background color - defaults to pyqtgraph's default
+        * control over background and border color - defaults to pyqtgraph's default
+        * control over spacing of items
     """
     def __init__(self, size=None, offset=None,background_color=None,border_color=None,margins=None,vertical_spacing=None):
         """
