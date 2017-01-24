@@ -24,9 +24,9 @@ def image_axes(x,y,im,parent=None,**kwargs):
     parent.addItem(item)
     return item,parent
 
-def image_axes_cbar(x,y,im,labels={},**kwargs):
+def image_axes_cbar(x,y,im,labels={},title=None,**kwargs):
     glw=GraphicsLayoutWidget()
-    plot=glw.addAlignedPlot(labels=labels)
+    plot=glw.addAlignedPlot(labels=labels,title=title)
     image=plot.image(im,rect=axes_to_rect(x,y),**kwargs)
     cbar=glw.addColorBar(image=image,rel_row=2)
     glw.show()
