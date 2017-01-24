@@ -25,6 +25,10 @@ pg.setConfigOption('foreground', 'k')
 #print(QtGui.QApplication.font().family())
 if QtGui.QApplication.font().family()=='Ubuntu':
     QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+else:
+    # SVG export screws up font size (Windows, pyqtgraph.__version__=0.10.0) unless
+    # it is explicitly set
+    pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Helvetica',pointSize=6))
 
 # Greek letters in PDF export on Windows look shite - tried this but didn't fix it
 # if QtGui.QApplication.font().family()=="MS Shell Dlg 2":
@@ -162,6 +166,13 @@ def addLegend(plot,**kwargs):
 # and
 # http://comments.gmane.org/gmane.comp.python.pyqtgraph/234
 def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
+    """
+    PDF export is accomplished by SVG export followed by conversion using Inkscape.
+    The coordinates used in the SVG file seem to be pixels. Inkscape's export
+    to PDF seems to use 90 pixels/inch (the export-dpi option only applies to PNG).
+    So use this to choose the size in pixels to achieve a desired PDF size in 
+    physical units.
+    """
     # If a list of formats, process one by one
     if not isinstance(fmt,basestring):
         raise NotImplementedError('Decided not to accept multiple formats...')
@@ -263,31 +274,7 @@ def plot(*args, **kargs):
     pg.plots.append(w)
     w.show()
     return w
-    
-def axes_to_rect(x,y):
-    """Return QRectF covering first and last elements of axis vectors.
-    
-    Args:
-        x: array with one nonsingleton dimension
-        y: array with one nonsingleton dimension
-    
-    Returns:
-        QRectF with top-left corner x[0],y[0] and lower-right corner x[-1],y[-1]
-    """
-    x=np.array(x).squeeze()
-    y=np.array(y).squeeze()
-    Dx=x[1]-x[0]
-    Dy=y[1]-y[0]
-    return QtCore.QRectF(x[0]-Dx/2,y[0]-Dy/2,x[-1]-x[0]+Dx,y[-1]-y[0]+Dy)
-    
-def image_axes(x,y,im,parent=None,**kwargs):
-    if parent is None:
-        parent=pg.PlotWindow()
-    item=pg.ImageItem(image=im,**kwargs)
-    item.setRect(axes_to_rect(x,y))
-    parent.addItem(item)
-    return item,parent
-    
+        
 def cornertext(text,parent,corner=(0,0),**kwargs):
     """Put text in the corner of a ViewBox (e.g. for labelling subpanels).
     
@@ -329,6 +316,7 @@ class AnchoredPlotItem(pg.PlotItem,pg.GraphicsWidgetAnchor):
         self.resize(*size)
 
 from .GraphicsLayout import *
+from .functions import *
 
 # somehow these cause crashing when exiting...
 # def make_application():
