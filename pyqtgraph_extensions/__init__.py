@@ -172,14 +172,10 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
     to PDF seems to use 90 pixels/inch (the export-dpi option only applies to PNG).
     So use this to choose the size in pixels to achieve a desired PDF size in 
     physical units.
+    
+    Args:
+        fmt (str): 'png','tif','pdf','svg','svg-png','svg-pdf-png'
     """
-    # If a list of formats, process one by one
-    if not isinstance(fmt,basestring):
-        raise NotImplementedError('Decided not to accept multiple formats...')
-        fmts=fmt
-        for fmt in fmts:
-            export(o,filename,fmt,mkdir,fmt_opts)
-        return
     fmt=fmt.lower()
     dir=os.path.dirname(filename)
     if len(dir)>0:
@@ -238,7 +234,30 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
             convert('pdf')
     else:
         raise ValueError('Unknown format %s'%fmt)
-        
+            
+def copy_to_clipboard(o,exporters=[]):
+    """Copy figure/item to clipboard.
+    
+    Clipboard data will become invalid (and might cause a crash) when Python
+    kernel quits. More detail below.
+    
+    Args:
+        o: the widget/item to be copied
+    
+    On Feb 2 2017 spent a while investigating clipboard copying (PyQt4, Windows 10).
+    General problem of crashing on pasting, or getting black or garbage. Traced to 
+    garbage collection of the exporter object. Seems that the QApplication.clipboard().setImage
+    inside ImageExporter doesn't actually make a copy - just keeps a reference. So
+    this function keeps a list of exporters to prevent them being collected.
+    """
+    if isinstance(o,pg.GraphicsLayoutWidget) or isinstance(o,GraphicsLayoutWidget):
+        item=o.scene()
+    else:
+        raise ValueError('Don''t know how to deal with %s'%type(o))
+    exporter=pgex.ImageExporter(item)
+    exporter.export(copy=True)
+    exporters.append(exporter)
+    
 def close_all():
     """Shortcut for QApplication.closeAllWindows."""
     pg.QtGui.QApplication.closeAllWindows()
