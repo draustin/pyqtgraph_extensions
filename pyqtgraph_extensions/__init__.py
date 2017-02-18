@@ -22,7 +22,7 @@ pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
 def set_font(name='Sans Serif',size=6):
-    """Set the default Qt application font.
+    """Set the default Qt application font <<after>> the QApplication is created.
     
     The underlying command is the static method QApplication::setFont. I (DRA) 
     have found font handling in PyQt and pyqtgraph rather cryptic. 
@@ -33,7 +33,7 @@ def set_font(name='Sans Serif',size=6):
     and whether the command has previously been called. I saw strange effects whereby
     the pyqtgraph axis labels had a different font size (very small)  to the titles.
     So I decided to not set the font automatically. Applications should do this
-    after the QApplication is created.
+    <<after the QApplication is created>>.
     
     --- Other observations ---
     
