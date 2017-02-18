@@ -29,7 +29,9 @@ def set_font(name='Sans Serif',size=6):
     SVG export seems to screw up the font size (Windows, pyqtgraph.__version__=0.10.0)
     unless it is explicitly set. The Ubuntu font has ugly Greek letters. For these
     two reasons I previously set the font automatically upon first import of pyqtgraph_extensions.
-    However, the command seems to depend on whether a QApplication has been created or not,
+    However, the command seems to depend on whether a QApplication has been created or not
+    (which means one gets different behaviour when running a program from the command
+    line or from within an IDE with built in Qt event loop),
     and whether the command has previously been called. I saw strange effects whereby
     the pyqtgraph axis labels had a different font size (very small)  to the titles.
     So I decided to not set the font automatically. Applications should do this
