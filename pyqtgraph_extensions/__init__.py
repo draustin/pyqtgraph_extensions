@@ -21,24 +21,34 @@ for v in ('SolidLine','DashLine','DashDotLine','DashDotDotLine','DotLine'):
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
-# Ubuntu font has rubbish Greek letters
-#print(QtGui.QApplication.font().family())
-if QtGui.QApplication.font().family()=='Ubuntu':
-    QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
-else:
-    # SVG export screws up font size (Windows, pyqtgraph.__version__=0.10.0) unless
-    # it is explicitly set
-    pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Helvetica',pointSize=6))
-
-# Greek letters in PDF export on Windows look shite - tried this but didn't fix it
-# if QtGui.QApplication.font().family()=="MS Shell Dlg 2":
-#     QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
-
-# Note that for changing the font size, found that
-# pg.QtGui.QApplication.font().setPointSize(12) 
-# doesn't work whereas
-# pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif',10))
-# does, at least in IPython notebook.
+def set_font(name='Sans Serif',size=6):
+    """Set the default Qt application font.
+    
+    The underlying command is the static method QApplication::setFont. I (DRA) 
+    have found font handling in PyQt and pyqtgraph rather cryptic. 
+    SVG export seems to screw up the font size (Windows, pyqtgraph.__version__=0.10.0)
+    unless it is explicitly set. The Ubuntu font has ugly Greek letters. For these
+    two reasons I previously set the font automatically upon first import of pyqtgraph_extensions.
+    However, the command seems to depend on whether a QApplication has been created or not,
+    and whether the command has previously been called. I saw strange effects whereby
+    the pyqtgraph axis labels had a different font size (very small)  to the titles.
+    So I decided to not set the font automatically. Applications should do this
+    after the QApplication is created.
+    
+    --- Other observations ---
+    
+    Greek letters in PDF export on Windows look shite - tried this but didn't fix it 
+    
+    if QtGui.QApplication.font().family()=="MS Shell Dlg 2":
+        QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+    
+    Found that:
+        pg.QtGui.QApplication.font().setPointSize(12) 
+    doesn't work whereas
+        pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif',12))
+    does.
+    """
+    pg.QtGui.QApplication.setFont(pg.QtGui.QFont(name,pointSize=size))
 
 # Tableau discrete color schemes
 # https://github.com/jiffyclub/palettable/blob/master/palettable/tableau/tableau.py
@@ -166,12 +176,23 @@ def addLegend(plot,**kwargs):
 # and
 # http://comments.gmane.org/gmane.comp.python.pyqtgraph/234
 def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
-    """
+    """Export widget/item as file.
+    
+    The purposes of this function are to (i) make exporting a one liner, 
+    (ii) automatically handle some of the finicky bug-like limitations of Pyqtgraph's
+    exporters, (iii) provide post-conversion using external tools.
+    
     PDF export is accomplished by SVG export followed by conversion using Inkscape.
     The coordinates used in the SVG file seem to be pixels. Inkscape's export
     to PDF seems to use 90 pixels/inch (the export-dpi option only applies to PNG).
     So use this to choose the size in pixels to achieve a desired PDF size in 
     physical units.
+    
+    Known limitations:
+        SVG export (and all derived formats such as PDF) have wonky text alignment
+        unless the font size if 6 points
+        Lines with infinite or NaN values, which display fine on the screen, do
+        not appear in SVG output.
     
     Args:
         fmt (str): 'png','tif','pdf','svg','svg-png','svg-pdf-png'
@@ -212,7 +233,8 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
         pgex.SVGExporter(item).export(filename+'.'+fmt)
     elif fmt in ('svg','pdf','eps','svg-png','svg-pdf-png'):
         # generate svg
-        pgex.SVGExporter(item).export(filename+'.'+'svg') 
+        exporter=pgex.SVGExporter(item)
+        exporter.export(filename+'.'+'svg') 
         # Convert from svg to required
         def convert(final_fmt):
             subprocess.call(['inkscape','--export-'+final_fmt+'='+filename+'.'+final_fmt,
