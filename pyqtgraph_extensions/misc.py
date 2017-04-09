@@ -309,7 +309,9 @@ class ColorBarItem(pg.GraphicsWidget):
         for image in self.images:
             if image.levels is None:
                 continue
-            if not np.allclose(image.levels,self.axis.range):
+            # If new levels significantly different from old ones (use atol=0
+            # to only get relative comparison), adjust image.
+            if not np.allclose(image.levels,self.axis.range,atol=0):
                 image.setLevels(self.axis.range)
 
             
