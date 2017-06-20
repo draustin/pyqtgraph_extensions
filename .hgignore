@@ -3,3 +3,10 @@ syntax: glob
 *~
 *.egg-info
 sync.ffs_db
+pyqtgraph_extensions/test/test.svg
+.cache/v/cache/lastfailed
+.idea/misc.xml
+.idea/modules.xml
+.idea/pyqtgraph_extensions.iml
+.idea/vcs.xml
+.idea/workspace.xml

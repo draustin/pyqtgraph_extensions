@@ -358,6 +358,14 @@ class AnchoredPlotItem(pg.PlotItem,pg.GraphicsWidgetAnchor):
         self.anchor(anchor,anchor,offset)
         self.resize(*size)
 
+class Qtbot:
+    """Mock pytest.Qtbot for running tests without pytest."""
+    def __init__(self):
+        self.widgets=[]
+
+    def addWidget(self,widget):
+        self.widgets.append(widget)
+
 from .GraphicsLayout import *
 from .functions import *
 
