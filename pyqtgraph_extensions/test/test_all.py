@@ -25,7 +25,7 @@ def test_ColorBarItem_manual(qtbot):
     glw.show()
     ##
     assert np.allclose(cb.axis.range,im.levels)
-    return glw
+    qtbot.addWidget(glw)
 
 
 def test_ColorBarItem_auto(qtbot):
@@ -43,8 +43,9 @@ def test_ColorBarItem_auto(qtbot):
     #cb.setLabel('intensity')
     glw.addItem(cb)
     glw.show()
-    ##
-    return glw
+    # Check changing color map.
+    im.setLookupTable(pgx.get_colormap_lut('bipolar'))
+    qtbot.addWidget(glw)
     
 def test_ColorBarItem_auto_multi(qtbot):
     ##
@@ -62,11 +63,13 @@ def test_ColorBarItem_auto_multi(qtbot):
         return im
     images=[make_image() for _ in range(3)]
     cb=pgx.ColorBarItem(images=images)
-    #cb.setLabel('intensity')
+    cb.setLabel('intensity')
     glw.addItem(cb,col=3,row=0,rowspan=8)
     glw.show()
-    ##
-    return glw
+    # Check changing color maps.
+    #for image in images:
+    images[0].setLookupTable(pgx.get_colormap_lut('bipolar'))
+    qtbot.addWidget(glw)
     
 def test_add_right_axis(qtbot):
     ##
@@ -80,7 +83,7 @@ def test_add_right_axis(qtbot):
     vb.plot([2,3,4],[7,6,5],pen=right_pen)
     pw.show()
     ##
-    return pw
+    qtbot.addWidget(pw)
     
 def test_AlignedPlotItem(qtbot):
     ##
@@ -103,7 +106,7 @@ def test_AlignedPlotItem(qtbot):
     gl.setRowStretchFactor(2,rel_row=2)
     glw.show()
     ##
-    return glw
+    qtbot.addWidget(glw)
  
 def test_GraphicsLayout(qtbot):
     ##
@@ -120,7 +123,7 @@ def test_GraphicsLayout(qtbot):
     gv.setCentralItem(gl)
     gv.show()
     ##
-    return gl
+    qtbot.addWidget(gv)
     
     
 def test_GraphicsLayout2(qtbot):
@@ -138,7 +141,7 @@ def test_GraphicsLayout2(qtbot):
     gv.setCentralItem(gl)
     gv.show()
     ##
-    return gl
+    qtbot.addWidget(gv)
     
 def test_complex_layout(qtbot):
     ##
@@ -194,17 +197,19 @@ def test_complex_layout(qtbot):
     glw.show()
     ##
     glw._repr_png_()
-    return glw
+    qtbot.addWidget(glw)
     
 def test_PlotWindow(qtbot):
     fig=pgx.plot([1,2,3])
     fig._repr_png_()
+    qtbot.addWidget(fig)
     
 def test_cornertext(qtbot):
     plt=pg.plot([1,2,3],[1,4,9])
     pgx.cornertext('(top left, default)',plt)
     pgx.cornertext('(top right, red)',plt,(1,0),color='r')
     pgx.cornertext('(bottom right, bold italic)',plt,(1,1),bold=True,italic=True)
+    qtbot.addWidget(plt)
 
 def test_AlignedPlotItem_log(qtbot):
     glw=pgx.GraphicsLayoutWidget()
@@ -212,7 +217,7 @@ def test_AlignedPlotItem_log(qtbot):
     plt.plot(range(1,100),np.arange(1,100)**2)
     plt.setLogMode(x=True,y=True)
     glw.show()
-    return glw
+    qtbot.addWidget(glw)
     
 def test_AnchoredPlotItem(qtbot):
     glw=pg.GraphicsLayoutWidget()
@@ -221,7 +226,7 @@ def test_AnchoredPlotItem(qtbot):
     ini=pgx.AnchoredPlotItem(plt,anchor=(1,0),offset=(-50,0))
     ini.plot(range(10),-np.arange(10)**2)
     glw.show()
-    return glw
+    qtbot.addWidget(glw)
     
 def test_LegendItem(qtbot):
     ##
@@ -232,28 +237,30 @@ def test_LegendItem(qtbot):
     plot.plot([1,2,3],[2,2,2],pen='g',name='flat')
     ##
     legend.setTextStyle(size='6pt')
+    qtbot.addWidget(plot)
     ##
-def do_all_tests():
-    ret_vals=[fun() for fun in (test_ColorBarItem_manual,test_ColorBarItem_auto,
-    test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,
-    test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem,
-    test_ColorBarItem_auto_multi,test_LegendItem)]
-    pgx.export(ret_vals[-4],os.path.join(os.path.expanduser('~'),'test'),'png')
-    pgx.close_all()
+# def do_all_tests():
+#     ret_vals=[fun() for fun in (test_ColorBarItem_manual,test_ColorBarItem_auto,
+#     test_add_right_axis,test_AlignedPlotItem,test_GraphicsLayout,test_GraphicsLayout2,
+#     test_cornertext,test_complex_layout,test_PlotWindow,test_AlignedPlotItem,
+#     test_ColorBarItem_auto_multi,test_LegendItem)]
+#     pgx.export(ret_vals[-4],os.path.join(os.path.expanduser('~'),'test'),'png')
+#     pgx.close_all()
     
-def test_export():
+def test_export(qtbot):
     ##
     glw=pgx.GraphicsLayoutWidget()
     plt=glw.addAlignedPlot(labels={'left':'y'})
     plt.plot([1,2],[3,4])
     glw.show()
     pgx.export(glw,'test','svg-pdf-png')
+    qtbot.addWidget(glw)
     ##
-if __name__=="__main__":
-    if QtCore.QCoreApplication.instance() is None:
-        app = QtGui.QApplication([])
-    #test_all()
-    #f=test_AnchoredPlotItem()
-    #f=test_ColorBarItem_auto()
-    #test_LegendItem(None)
-    test_export()
+# if __name__=="__main__":
+#     if QtCore.QCoreApplication.instance() is None:
+#         app = QtGui.QApplication([])
+#     #test_all()
+#     #f=test_AnchoredPlotItem()
+#     #f=test_ColorBarItem_auto()
+#     #test_LegendItem(None)
+#     test_export()

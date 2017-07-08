@@ -51,7 +51,7 @@ class ImageItem(pg.ImageItem):
         if emit:
             self.sigLevelsChanged.emit()
             
-    def setLookupTable(self, lut, update=True):
+    def setLookupTable(self, lut, update=True, emit=True):
         """
         Set the lookup table (numpy array) to use for this image. (see 
         :func:`makeARGB <pyqtgraph.makeARGB>` for more information on how this is used).
@@ -62,7 +62,8 @@ class ImageItem(pg.ImageItem):
         or :class:`GradientEditorItem <pyqtgraph.GradientEditorItem>`.
         """
         pg.ImageItem.setLookupTable(self, lut, update)
-        self.sigLookupTableChanged.emit()
+        if emit:
+            self.sigLookupTableChanged.emit()
     
     def setImage(self,image=None,autoLevels=True,levels=None,**kwargs):
         """Add behaviour that if autoLevels is False and levels is None, levels
@@ -248,7 +249,8 @@ class ColorBarItem(pg.GraphicsWidget):
         for im in self.images:
             if image is im:
                 continue
-            im.setLookupTable(image.lut)
+            # When setting co-linked images, don't want them to emit the signal.
+            im.setLookupTable(image.lut,emit=False)
         
     def imageRangeChanged(self,images):
         """Respond to change in the range of the images."""
