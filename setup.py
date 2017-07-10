@@ -9,6 +9,6 @@ setup(name="pyqtgraph_extensions",
       url='https://bitbucket.org/draustin/pyqtgraph_extensions',
       license='BSD',
       packages=find_packages(),#['pyqtgraph_extensions', 'pyqtgraph_extended'],
-      requires=['pyqtgraph'],
+      install_requires=['pyqtgraph'],
       package_data={'pyqtgraph_extensions':['*.png']}
 )
