@@ -255,6 +255,9 @@ def test_export(qtbot):
     glw.show()
     pgx.export(glw,'test','svg-pdf-png')
     qtbot.addWidget(glw)
+
+def test_calc_image_rect():
+    assert pgx.calc_image_rect((10,11))==QtCore.QRectF(-0.5,-0.5,11,10)
     ##
 # if __name__=="__main__":
 #     if QtCore.QCoreApplication.instance() is None:
