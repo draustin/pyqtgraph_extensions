@@ -15,14 +15,14 @@ def axes_to_rect(x,y):
     Dx=x[1]-x[0]
     Dy=y[1]-y[0]
     return QtCore.QRectF(x[0]-Dx/2,y[0]-Dy/2,x[-1]-x[0]+Dx,y[-1]-y[0]+Dy)
-
-def calc_image_rect(shape):
+    
+def calc_image_rect(shape,x0=0,y0=0):
     """Image rect argument that results in pixels centered on their indices.
 
     Args:
          shape: tuple of number or rows, columns
     """
-    return QtCore.QRectF(-0.5,-0.5,shape[1],shape[0])
+    return QtCore.QRectF(-0.5+x0,-0.5+y0,shape[1],shape[0])
         
 def image_axes(x,y,im,parent=None,**kwargs):
     if parent is None:
