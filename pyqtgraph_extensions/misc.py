@@ -219,8 +219,11 @@ class ColorBarItem(pg.GraphicsWidget):
         self.axis.setLabel(label)
         
     def setImages(self,images):
-        if self.images!=():
-            raise NotImplementedError('disconnect')
+        for image in self.images:
+            # Hack - this connects all slots.
+            image.sigLevelsChanged.disconnect()
+            image.sigImageChanged.disconnect()
+            image.sigLookupTableChanged.disconnect()
         self.images=images
         if self.images!=():
             self.update() # what does this do?
