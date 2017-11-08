@@ -9,17 +9,18 @@ class AlignedPlotItem(QtCore.QObject):
     sigYRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox Y range has changed
     sigXRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox X range has changed          
             
-    def __init__(self, layout, origin=(0,0), name=None, labels=None, title=None, viewBox=None, axisItems=None, create=None, **kargs):
+    def __init__(self, name=None, labels=None, title=None, viewBox=None, axisItems=None, create=None, **kargs):
         """
         Note: supplied axisItems are not added to the layout. This allows for manual
             placement
         """
         QtCore.QObject.__init__(self)
-        self.layout=layout
+        self.layout=None
         if create is None:
             create={}
         for v in ('title','left','right','top','bottom'):
             create.setdefault(v,True)
+        self.create=create
         # ViewBox
         if viewBox is None:
             viewBox = pg.ViewBox(enableMenu=False)
@@ -30,15 +31,15 @@ class AlignedPlotItem(QtCore.QObject):
         self.vb.sigRangeChanged.connect(self.sigRangeChanged)
         self.vb.sigXRangeChanged.connect(self.sigXRangeChanged)
         self.vb.sigYRangeChanged.connect(self.sigYRangeChanged)
-        self.layout.addItem(self.vb,row=origin[0]+create['title']+create['top'],col=origin[1]+create['left'])        
         ## Create and place axis items
         if axisItems is None:
             axisItems = {}
+        self.axisItems=axisItems
         self.axes = {}
-        for k, pos, alignment in (('top',    (create['title']+0,               create['left']+0), pg.QtCore.Qt.AlignBottom),
-                                  ('bottom', (create['title']+create['top']+1, create['left']+0), pg.QtCore.Qt.AlignTop), 
-                                  ('left',   (create['title']+create['top'],   0),                pg.QtCore.Qt.AlignRight),
-                                  ('right',  (create['title']+create['top'],   create['left']+1), pg.QtCore.Qt.AlignLeft)):
+        for k, pos in (('top',    (create['title']+0,               create['left']+0)),
+                       ('bottom', (create['title']+create['top']+1, create['left']+0)),
+                       ('left',   (create['title']+create['top'],   0)),
+                       ('right',  (create['title']+create['top'],   create['left']+1))):
             if not create[k]:
                 continue
             if k in axisItems:
@@ -47,16 +48,11 @@ class AlignedPlotItem(QtCore.QObject):
                 axis = AxisItem(orientation=k)
             axis.linkToView(self.vb)
             self.axes[k] = {'item': axis, 'pos': pos}
-            if k not in axisItems: # 8/11/2016 hack to allow  external positioning of axes
-                self.layout.addItem(axis,row=origin[0]+pos[0],col=origin[1]+pos[1])
-            # Dane: found this necessary
-            self.layout.layout.setAlignment(axis,alignment)
             axis.setZValue(-1000)
             axis.setFlag(axis.ItemNegativeZStacksBehindParent)
         # Title
         if create['title']:
             self.titleLabel = pg.LabelItem('') #  size='11pt' - leave size as is
-            self.layout.addItem(self.titleLabel,origin[0]+0,origin[1],colspan=3)
             self.setTitle(None)  ## hide
         
         if create['right']:
@@ -90,8 +86,26 @@ class AlignedPlotItem(QtCore.QObject):
         if len(kargs) > 0:
             self.plot(**kargs)
             
-        
-            
+    def addToLayout(self,layout,origin):
+        assert self.layout is None
+        self.layout=layout
+        create=self.create
+        layout.addItem(self.vb,row=origin[0]+create['title']+create['top'],col=origin[1]+create['left'])
+        for k,alignment in (('top',pg.QtCore.Qt.AlignBottom),
+                            ('bottom',pg.QtCore.Qt.AlignTop),
+                            ('left',pg.QtCore.Qt.AlignRight),
+                            ('right',pg.QtCore.Qt.AlignLeft)):
+            if not create[k]:
+                continue
+            axis=self.axes[k]['item']
+            pos=self.axes[k]['pos']
+            # Dane: found this necessary
+            self.layout.layout.setAlignment(axis,alignment)
+            if k not in self.axisItems: # 8/11/2016 hack to allow external positioning of axes
+                self.layout.addItem(axis,row=origin[0]+pos[0],col=origin[1]+pos[1])
+        if create['title']:
+            self.layout.addItem(self.titleLabel,origin[0]+0,origin[1],colspan=3)
+
     ## Wrap a few methods from viewBox. 
     #Important: don't use a settattr(m, getattr(self.vb, m)) as we'd be leaving the viebox alive
     #because we had a reference to an instance method (creating wrapper methods at runtime instead).

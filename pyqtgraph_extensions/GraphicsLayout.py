@@ -23,7 +23,8 @@ class GraphicsLayout(pg.GraphicsLayout):
         if col is None:
             col = self.currentCol
         
-        plot = AlignedPlotItem(self,(row,col),**kwargs)
+        plot = AlignedPlotItem(**kwargs)
+        plot.addToLayout(self,(row,col))
         
         self.currentCol=col+3
         return plot
