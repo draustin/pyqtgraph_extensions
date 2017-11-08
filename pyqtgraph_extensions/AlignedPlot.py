@@ -4,7 +4,7 @@ from . import AxisItem
 from .misc import LegendItem,ImageItem
 from pyqtgraph.python2_3 import basestring
 
-class AlignedPlotItem(QtCore.QObject):
+class AlignedPlot(QtCore.QObject):
     sigRangeChanged = QtCore.Signal(object, object)    ## Emitted when the ViewBox range has changed
     sigYRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox Y range has changed
     sigXRangeChanged = QtCore.Signal(object, object)   ## Emitted when the ViewBox X range has changed          
@@ -85,8 +85,13 @@ class AlignedPlotItem(QtCore.QObject):
         
         if len(kargs) > 0:
             self.plot(**kargs)
-            
-    def addToLayout(self,layout,origin):
+
+    def addToLayout(self,layout):
+        col=layout.currentCol
+        self.insertInLayout(layout,(layout.currentRow,layout.currentCol))
+        layout.currentCol=col+3
+
+    def insertInLayout(self,layout,origin):
         assert self.layout is None
         self.layout=layout
         create=self.create

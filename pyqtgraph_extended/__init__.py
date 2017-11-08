@@ -70,7 +70,7 @@ if __name__=="__main__":
         gl.setBorder((255,0,0))
         #glw.ci.layout.setSpacing(setSpacing(0)
         #gl.setSpacing(0)
-        plt1=AlignedPlotItem(gl,labels={'left':'left 1','top':'top 1','right':'right 1'})
+        plt1=AlignedPlot(gl,labels={'left':'left 1','top':'top 1','right':'right 1'})
         gl.nextRows()
         
         gv.setCentralItem(gl)

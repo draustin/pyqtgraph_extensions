@@ -11,7 +11,9 @@ import subprocess
 
 from .AxisItem import *
 from .misc import *
-from .AlignedPlotItem import *
+from .AlignedPlot import *
+# Backwards compatibility.
+AlignedPlotItem=AlignedPlot
 
 # Bring line styles into the namespace for convenience
 for v in ('SolidLine','DashLine','DashDotLine','DashDotDotLine','DotLine'):
@@ -333,7 +335,7 @@ def cornertext(text,parent,corner=(0,0),**kwargs):
     # Convert parent to a pg.ViewBox
     if isinstance(parent,pg.PlotWidget):
         parent=parent.getPlotItem()
-    if isinstance(parent,pg.PlotItem) or isinstance(parent,AlignedPlotItem):
+    if isinstance(parent,pg.PlotItem) or isinstance(parent,AlignedPlot):
         parent=parent.getViewBox()
     # Use the GraphicsWidgetAnchor base class of
     # LabelItem to lock its position to the viewbox

@@ -1,6 +1,6 @@
 import pyqtgraph as pg
 from pyqtgraph import QtCore,QtGui
-from . import AlignedPlotItem,ColorBarItem,adjust_widget,IPythonPNGRepr
+from . import AlignedPlot,ColorBarItem,adjust_widget,IPythonPNGRepr
 
 class GraphicsLayout(pg.GraphicsLayout):
     """Like pyqtgraph.GraphicsLayout except supports items which can
@@ -23,8 +23,8 @@ class GraphicsLayout(pg.GraphicsLayout):
         if col is None:
             col = self.currentCol
         
-        plot = AlignedPlotItem(**kwargs)
-        plot.addToLayout(self,(row,col))
+        plot = AlignedPlot(**kwargs)
+        plot.insertInLayout(self,(row,col))
         
         self.currentCol=col+3
         return plot
