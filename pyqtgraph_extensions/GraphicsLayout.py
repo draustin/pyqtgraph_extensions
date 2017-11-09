@@ -11,8 +11,13 @@ class GraphicsLayout(pg.GraphicsLayout):
     def __init__(self, parent=None, border=None):
         pg.GraphicsLayout.__init__(self,parent,border)
         self.setSpacing(0)
+
+    def addItem(self, item, row=None, col=None, rowspan=1, colspan=1, rel_row=0):
+        if row is None:
+            row=self.currentRow
+        pg.GraphicsLayout.addItem(self,item,row+rel_row,col,rowspan,colspan)
         
-    def addAlignedPlot(self, row=None, col=None, **kwargs):
+    def addAlignedPlot(self, row=None, col=None, plot=None, **kwargs):
         """
         Create an AlignedPlotItem starting in the next available cell (or in the cell specified)
         All extra keyword arguments are passed to :func:`AlignedPlotItem.__init__ <pyqtgraph_ex.AlignedPlotItem.__init__>`
@@ -22,8 +27,10 @@ class GraphicsLayout(pg.GraphicsLayout):
             row = self.currentRow
         if col is None:
             col = self.currentCol
-        
-        plot = AlignedPlot(**kwargs)
+        if plot is None:
+            plot = AlignedPlot(**kwargs)
+        else:
+            assert len(kwargs)==0
         plot.insertInLayout(self,(row,col))
         
         self.currentCol=col+3

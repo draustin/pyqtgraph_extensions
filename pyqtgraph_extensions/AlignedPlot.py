@@ -86,11 +86,6 @@ class AlignedPlot(QtCore.QObject):
         if len(kargs) > 0:
             self.plot(**kargs)
 
-    def addToLayout(self,layout):
-        col=layout.currentCol
-        self.insertInLayout(layout,(layout.currentRow,layout.currentCol))
-        layout.currentCol=col+3
-
     def insertInLayout(self,layout,origin):
         assert self.layout is None
         self.layout=layout
