@@ -1,4 +1,4 @@
-import logging
+import logging,math
 import pyqtgraph as pg
 import pyqtgraph.functions as fn
 import numpy as np
@@ -345,12 +345,22 @@ class PlotWindow(pg.PlotWindow):
         buffer.close()
 
         return bytes(byte_array)
-        
-        
-        
-        
-        
-        
+
+class RectRoi(pg.RectROI):
+    def getVertices(self):
+        """Return tuple of (x,y) coordinates of vertices."""
+        px,py=self.pos()
+        sx,sy=self.size()
+        angle=math.radians(self.angle())
+        cos=0.5*math.cos(angle)
+        sin=0.5*math.sin(angle)
+        ux=sx*cos
+        uy=sx*sin
+        vx=-sy*sin
+        vy=sy*cos
+        vertices=(px-ux-vx,py-uy-vy),(px+ux-vx,py+uy-vy),(px+ux+vx,py+uy+vy),(px-ux+vx,py-uy+vy)
+        return vertices
+
 # class ImageLayoutItem(pg.ImageItem,QtGui.QGraphicsLayoutItem):
 #     def __init__(self,image=None,parent=None, **kargs):
 #         QtGui.QGraphicsLayoutItem.__init__(self,parent)
