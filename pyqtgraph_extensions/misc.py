@@ -346,19 +346,20 @@ class PlotWindow(pg.PlotWindow):
 
         return bytes(byte_array)
 
-class RectRoi(pg.RectROI):
+class RectROI(pg.RectROI):
     def getVertices(self):
         """Return tuple of (x,y) coordinates of vertices."""
+        # Lower left corner.
         px,py=self.pos()
         sx,sy=self.size()
         angle=math.radians(self.angle())
-        cos=0.5*math.cos(angle)
-        sin=0.5*math.sin(angle)
+        cos=math.cos(angle)
+        sin=math.sin(angle)
         ux=sx*cos
         uy=sx*sin
         vx=-sy*sin
         vy=sy*cos
-        vertices=(px-ux-vx,py-uy-vy),(px+ux-vx,py+uy-vy),(px+ux+vx,py+uy+vy),(px-ux+vx,py-uy+vy)
+        vertices=(px,py),(px+ux,py+uy),(px+ux+vx,py+uy+vy),(px+vx,py+vy)
         return vertices
 
 # class ImageLayoutItem(pg.ImageItem,QtGui.QGraphicsLayoutItem):
