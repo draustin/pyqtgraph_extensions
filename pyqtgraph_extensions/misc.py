@@ -98,8 +98,11 @@ class LegendItem(pg.LegendItem):
             border_color=pg.CONFIG_OPTIONS['foreground']
         self.background_color=background_color
         self.border_color=border_color
-        if margins is not None:
-            self.layout.setContentsMargins(*margins)
+        if margins is None:
+            margins=0,0,0,0
+        self.margins=margins
+        #if margins is not None:
+        #    self.layout.setContentsMargins(*margins)
         if vertical_spacing is not None:
             self.layout.setVerticalSpacing(vertical_spacing)
         
@@ -113,18 +116,35 @@ class LegendItem(pg.LegendItem):
         for sample,label in self.items:
             label.setText(label.text,*args,**kwargs)
             
+    # def updateSize(self):
+    #     if self.size is not None:
+    #         return
+    #         
+    #     height = 0
+    #     width = 0
+    #     #print("-------")
+    #     for sample, label in self.items:
+    #         height += max(sample.height(), label.height()) + 3
+    #         width = max(width, (sample.sizeHint(QtCore.Qt.MinimumSize, sample.size()).width() +
+    #                             label.sizeHint(QtCore.Qt.MinimumSize, label.size()).width()))
+    #         #print(width, height)
+    #     #print width, height
+    #     self.setGeometry(0, 0, width+25, height)
+            
     def updateSize(self):
         # Modified from pyqtgraph's original to use minimumWidth() rather than
         # width() on items (likewise for height), to prevent runaway growth of 
-        # legend with repeated calling of updateSize
+        # legend with repeated calling of updateSize. Then original pyqtgraph fixed the bug. But
+        # still want margin and verticalSpacing feature.
         if self.size is not None:
             return
-        margins=self.layout.getContentsMargins()
+        margins=self.margins#layout.getContentsMargins()
         height = margins[1]
         width = margins[0]
         for sample, label in self.items:
-            height += max(sample.minimumHeight(), label.minimumHeight()) + self.layout.verticalSpacing()
-            width = max(width, sample.minimumWidth()+label.minimumWidth())
+            height += max(sample.height(), label.height()) + self.layout.verticalSpacing()
+            width = max(width, (sample.sizeHint(QtCore.Qt.MinimumSize, sample.size()).width() +
+                                label.sizeHint(QtCore.Qt.MinimumSize, label.size()).width()))
         self.setGeometry(0, 0, width+margins[2], height+margins[3]) # D
 
 class ViewBox(pg.ViewBox):

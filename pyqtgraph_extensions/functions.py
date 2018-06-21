@@ -1,11 +1,12 @@
 from . import *
 
-def axes_to_rect(x,y):
+def axes_to_rect(x,y,scale=1):
     """Return QRectF covering first and last elements of axis vectors.
     
     Args:
         x: array with one nonsingleton dimension
         y: array with one nonsingleton dimension
+        scale (scalar): Factor by which axes are multiplied.
     
     Returns:
         QRectF with centre of top-left pixel x[0],y[0] and centre of lower-right pixel at x[-1],y[-1]
@@ -14,7 +15,7 @@ def axes_to_rect(x,y):
     y=np.array(y).squeeze()
     Dx=x[1]-x[0]
     Dy=y[1]-y[0]
-    return QtCore.QRectF(x[0]-Dx/2,y[0]-Dy/2,x[-1]-x[0]+Dx,y[-1]-y[0]+Dy)
+    return QtCore.QRectF((x[0]-Dx/2)*scale,(y[0]-Dy/2)*scale,(x[-1]-x[0]+Dx)*scale,(y[-1]-y[0]+Dy)*scale)
     
 def calc_image_rect(shape,x0=0,y0=0):
     """Image rect argument that results in pixels centered on their indices.
