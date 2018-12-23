@@ -21,7 +21,7 @@ def calc_image_rect(shape,x0=0,y0=0):
     """Image rect argument that results in pixels centered on their indices.
 
     Args:
-         shape: tuple of number or rows, columns
+         shape: tuple of number or rows (y), columns (x).
     """
     return QtCore.QRectF(-0.5+x0,-0.5+y0,shape[1],shape[0])
         
