@@ -1,0 +1,5 @@
+# Extra (non-Python) files needed by the package
+# Needs include_package_data=True in setup.py
+recursive-include packages/physdata/refindinf/database *
+include pyqtgraph_recipes/*.txt
+ddd

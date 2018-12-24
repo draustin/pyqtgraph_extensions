@@ -11,7 +11,6 @@ if I don't. So will do so for good practice.
 """
 import math
 import numpy as np
-import fourier
 import pyqtgraph_extended as pg
 import pyqtgraph_recipes as pgr
 
@@ -53,30 +52,3 @@ def test_ImageWithProjsAligned(qtbot):
     ip=pgr.ImageWithProjsAligned()
     ip.widget.show()
     return ip
-
-t=np.linspace(-150,150,100)
-omega_0=2.35
-T0=50
-alpha=0.004
-Et=2*np.exp(-0.5*(t/T0)**2-1j*(omega_0*t-alpha*t**2))
-omega=fourier.conj_axis(t,omega_0)
-
-def test_PhaseSpacePlot(qtbot):
-    ipp=pgr.ImageWithProjsAlignedPlot()
-    psp=pgr.PhaseSpacePlot(ipp.plots,ftd=fourier.FTD(x=t,k=omega,sign=1),Ex=Et,cbar=ipp.cbar,lut=pg.get_colormap_lut())
-    return psp
-
-def test_PhaseSpacePlotAligned(qtbot):
-    psp=pgr.PhaseSpacePlotAligned(ftd=fourier.FTD(x=t,k=omega,sign=1),Ex=Et,bound_cond='cyclic')
-    return psp
-    
-if __name__=="__main__":
-    figs=[]
-    figs.append(test_plot_polar_image_1(None))
-    figs.append(test_plot_polar_image_2(None))
-    figs.append(test_plot_polar_image_3(None))
-    figs.append(test_plot_radial_grid_lines(None))
-    figs.append(test_ImageWithProjsAligned(None))
-    figs.append(test_PhaseSpacePlot(None))
-    figs.append(test_PhaseSpacePlotAligned(None))
-    
