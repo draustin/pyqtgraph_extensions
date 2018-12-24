@@ -10,3 +10,7 @@ pyqtgraph_extensions/test/test.svg
 .idea/pyqtgraph_extensions.iml
 .idea/vcs.xml
 .idea/workspace.xml
+env
+build
+.pytest_cache
+.DS_Store
