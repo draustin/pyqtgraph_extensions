@@ -15,5 +15,5 @@ setup(name="pyqtgraph_extensions",
       # pain. See
       # https://svn.python.org/projects/sandbox/trunk/setuptools/setuptools.txt
       include_package_data=True,
-      dependency_links=['https://github.com/draustin/mathx/tarball/master']
+      dependency_links=['https://github.com/draustin/mathx/tarball/master#egg=mathx-0.1']
 )
