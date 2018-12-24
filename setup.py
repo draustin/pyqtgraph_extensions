@@ -14,5 +14,6 @@ setup(name="pyqtgraph_extensions",
       # This is needed to make it read MANIFEST.IN. Discovering this was a giant
       # pain. See
       # https://svn.python.org/projects/sandbox/trunk/setuptools/setuptools.txt
-      include_package_data=True
+      include_package_data=True,
+      dependency_links=['https://github.com/draustin/mathx/tarball/master']
 )
