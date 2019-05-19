@@ -9,7 +9,7 @@ setup(name="pyqtgraph_extensions",
       url='https://bitbucket.org/draustin/pyqtgraph_extensions',
       license='BSD',
       packages=find_packages(),#['pyqtgraph_extensions', 'pyqtgraph_extended'],
-      install_requires=['pyqtgraph', 'pyqt5', 'pytest', 'pytest-qt', 'scipy', 'mathx'],
+      install_requires=['pyqtgraph', 'PyQt5', 'pytest', 'pytest-qt', 'scipy', 'mathx', 'PyOpenGL'],
       package_data={'pyqtgraph_extensions':['*.png']},
       # This is needed to make it read MANIFEST.IN. Discovering this was a giant
       # pain. See
