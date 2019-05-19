@@ -366,9 +366,9 @@ def plot_polar_image(r, phi, data, layout=None, r_label_phi=math.pi/4, grid_r=No
     if isinstance(lut, str):
         lut = pg.get_colormap_lut(lut)
     phip = phi_0 + phi_dir*phi
-    x, y, data = mathx.polar_reg_grid_to_rect(r, phip, data, theta_repeats, osamp)
+    x, y, data = mathx.polar_reg_grid_to_rect(r.squeeze(), phip, data, theta_repeats, osamp)
     if mask_array is not None:
-        _, _, mask_array = mathx.polar_reg_grid_to_rect(r, phip, mask_array, theta_repeats, osamp)
+        _, _, mask_array = mathx.polar_reg_grid_to_rect(r.squeeze(), phip, mask_array, theta_repeats, osamp)
         if levels is None:
             data_masked = data[mask_array >= 0]
             levels = data_masked.min(), data_masked.max()
