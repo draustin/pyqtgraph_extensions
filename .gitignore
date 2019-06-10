@@ -13,3 +13,7 @@ env
 build
 .pytest_cache
 .DS_Store
+
+test.pdf
+test.png
+test.svg
