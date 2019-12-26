@@ -30,7 +30,6 @@ See [`pyqtgraph_extensions/examples`](pyqtgraph_extensions/examples) for some ex
 
 The `AlignedPlotItem` is so-called because it uses its parent's graphics layout object for holding its constituent items (view box, axis items and title) rather than creating one internally. Its constituents can therefore be aligned with those of other items in the parent's graphics layout, including the constituent items of other `AlignedPlotItem` objects. Here's an [example](pyqtgraph_extensions/examples/demo_axis_alignment.py).
 ![](screenshots/axis_alignment.png)
-The extensions include:
 
 ### More axis controls
 
@@ -43,11 +42,11 @@ The extensions include:
 
 ![](screenshots/live_colorbaritem.gif)
 
-### Miscellaneous
+### Other
 
-* Simplified exporting
-* Easy adding of a second vertical axis on the right hand side (with linked x axis), likewise for a second horizontal axis on the top.
-* More [GLGraphicsItems](http://www.pyqtgraph.org/documentation/3dgraphics/glgraphicsitem.html)
+* Simplified exporting with the `export` function
+* Easy adding of a second vertical axis on the right hand side (with linked x axis), likewise for a second horizontal axis on the top. See [example](pyqtgraph_extensions/examples/demo_right_top_axes.py).
+* More [GLGraphicsItems](http://www.pyqtgraph.org/documentation/3dgraphics/glgraphicsitem.html) - see the [unit tests](pyqtgraph_extensions/opengl/test/test_pyqtgraph_extensions_opengl.py).
 
 ## Dependencies & compatibility
 
@@ -69,3 +68,8 @@ Optional:
 I developed the various features as needed and will continue on the same basis. When I began writing `pyqtgraph_extensions` I was just starting out with Python, Git/GitHub, and open source tools in general (I'm a convert from MATLAB).
 
 I'd be happy for any/all features to be moved into `pyqtgraph` proper. Feel free to [reach out](mailto:dane_austin@fastmail.com.au).
+
+### TODO
+
+* Add switch for user interactivity on color bar example.
+* Documentation
