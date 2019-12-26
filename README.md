@@ -16,6 +16,12 @@ or
 
     import pyqtgraph_extended as pg
 
+## Installation
+
+To get latest release from PyPi: `pip install pyqtgraph_extensions`.
+
+Or install from GitHub: `pip install git+https://github.com/draustin/pyqtgraph_extensions`.
+
 ## Features
 
 See [`pyqtgraph_extensions/examples`](pyqtgraph_extensions/examples) for some examples.
