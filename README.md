@@ -4,7 +4,7 @@ Various extensions for [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph).
 
 Installing `pyqtgraph_extensions` creates two namespaces:
 
-* `pyqtgraph_extensions` \en various classes and functions providing some of extra functionality for pyqtgraph
+* `pyqtgraph_extensions` - various classes and functions providing some of extra functionality for pyqtgraph
 * `pyqtgraph_extended` - a namespace merging pyqtgraph_extensions with the original pyqtgraph
 
 In principle, it should be possible to import `pyqtgraph_extended` instead of `pyqtgraph` and have the same behaviour but with new functionality available. So the two options for using this repository are:
@@ -28,9 +28,12 @@ See `pyqtgraph_extensions/examples` for some examples.
 
 # Dependencies
 
-[PyQtGraph](http://www.pyqtgraph.org/)
+Required:
+* [PyQtGraph](http://www.pyqtgraph.org/)
+* [SciPy](https://www.scipy.org/)
 
-TODO scipy? mathx?
+Optional:
+* [mathx](https://github.com/draustin/mathx)  - required (the polar plots in) for `pyqtgraph_recipes`.
 
 ## Test environment
 

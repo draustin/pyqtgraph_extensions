@@ -1,7 +1,6 @@
 import math, os
 import numpy as np
 import pyqtgraph_extended as pg
-# TODO remove mathx dependency
 import mathx
 from mathx import usv
 
