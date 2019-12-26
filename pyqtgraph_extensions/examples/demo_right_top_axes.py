@@ -12,7 +12,7 @@ else:
     qapp=None
 
 ## Demo add_right_axis.
-plt=pg.PlotWindow(labels={'left':'left-hand y-axis','bottom':'x axis'})
+plt=pg.PlotWindow(title='#1 - add_right_axis', labels={'left':'left-hand y-axis','bottom':'x axis'})
 # Make left y-axis blue ...
 plt.getAxis('left').setPen('b')
 # ... and color its data the same
@@ -22,7 +22,7 @@ right_plot=pgx.add_right_axis(plt,pen='r',label='right-hand y axis')
 right_plot.plot([0,1],[1,0],pen='r')
 
 ## Same as above, but with top axis.
-plt=pg.PlotWindow(labels={'left':'y-axis','bottom':'bottom x axis'})
+plt=pg.PlotWindow(title='#2 - add_right_axis', labels={'left':'y-axis','bottom':'bottom x axis'})
 plt.getAxis('bottom').setPen('b')
 plt.plot([0,1],[0,1],pen='b')
 right_plot=pgx.add_top_axis(plt,pen='r',label='top x axis')

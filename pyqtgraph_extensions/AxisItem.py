@@ -18,6 +18,7 @@ class AxisItem(pg.AxisItem):
     range_changed=QtCore.pyqtSignal()
     
     def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True):
+        # Note - development branch of pyqtgraph adds extra argument textPen here.
         pg.AxisItem.__init__(self,orientation,pen,linkView,parent,maxTickLength,showValues)
         self.set_lmt_btns=[]
         self.aset_lmt_btns=[]

@@ -1,4 +1,4 @@
-"""Demo add_right_axis, allowing a right-hand y-axis with the same x-axis."""
+"""Demo miscellaneous features."""
 import sys
 import numpy as np
 import pyqtgraph as pg
