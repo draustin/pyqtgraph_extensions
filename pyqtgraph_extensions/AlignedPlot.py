@@ -99,10 +99,14 @@ class AlignedPlot(QtCore.QObject):
                 continue
             axis=self.axes[k]['item']
             pos=self.axes[k]['pos']
-            # Dane: found this necessary
-            self.layout.layout.setAlignment(axis,alignment)
+
+            # Need to add item, then set alignment.
+
             if k not in self.axisItems: # 8/11/2016 hack to allow external positioning of axes
                 self.layout.addItem(axis,row=origin[0]+pos[0],col=origin[1]+pos[1])
+
+            self.layout.layout.setAlignment(axis,alignment)
+
         if create['title']:
             self.layout.addItem(self.titleLabel,origin[0]+0,origin[1],colspan=3)
 
