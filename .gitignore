@@ -13,7 +13,10 @@ env
 build
 .pytest_cache
 .DS_Store
-
+.eggs
+.tox
+.idea
 test.pdf
 test.png
 test.svg
+dist

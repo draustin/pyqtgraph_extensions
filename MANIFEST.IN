@@ -1,3 +1,0 @@
-# Extra (non-Python) files needed by the package
-# Needs include_package_data=True in setup.py
-include pyqtgraph_recipes/*.txt

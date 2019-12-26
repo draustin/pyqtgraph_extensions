@@ -4,6 +4,7 @@ import os,sys
 import pyqtgraph as pg
 from pyqtgraph import QtGui,QtCore
 import pyqtgraph.exporters as pgex
+# TODO Replace with numpy to remove scipy dependency.
 from scipy.interpolate import interp1d
 from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
 import numpy as np

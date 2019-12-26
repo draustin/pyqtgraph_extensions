@@ -1,38 +1,37 @@
-# README #
+# README
 
-This repository contains two packages:
+Various extensions for [pyqtgraph](https://github.com/pyqtgraph/pyqtgraph).
 
-* pyqtgraph_extensions --- various classes and functions providing some of extra functionality for pyqtgraph
-* pyqtgraph_extended --- a namespace merging pyqtgraph_extensions with the original pyqtgraph
+Installing `pyqtgraph_extensions` creates two namespaces:
 
-In principle, it should be possible to import pyqtgraph_extended instead of pyqtgraph and have the same behaviour but with new functionality available. So the two options for using this repository are:
+* `pyqtgraph_extensions` \en various classes and functions providing some of extra functionality for pyqtgraph
+* `pyqtgraph_extended` - a namespace merging pyqtgraph_extensions with the original pyqtgraph
+
+In principle, it should be possible to import `pyqtgraph_extended` instead of `pyqtgraph` and have the same behaviour but with new functionality available. So the two options for using this repository are:
 
     import pyqtgraph as pg
     import pyqtgraph_extensions as pgx
 
-or 
+or
 
     import pyqtgraph_extended as pg
 
 The extensions include:
 
-* AlignedPlotItem --- a substitute for [pyqtgraph.PlotItem](http://www.pyqtgraph.org/documentation/graphicsItems/plotitem.html?highlight=plotitem#pyqtgraph.PlotItem) in which the internal elements are managed by the parent layout. This allows for better control over the alignment and ensuring that the edges of plots line up.
+* `AlignedPlotItem` - a substitute for [pyqtgraph.PlotItem](http://www.pyqtgraph.org/documentation/graphicsItems/plotitem.html?highlight=plotitem#pyqtgraph.PlotItem) in which the internal elements are managed by the parent layout. This allows for better control over the alignment and ensuring that the edges of plots line up.
 * Simplified exporting
 * Easy adding of a second vertical axis on the right hand side (with linked x axis), likewise for a second horizontal axis on the top.
-* MATLAB-like colorbar
+* Color bar item - MATLAB-like alternative to Pyqtgraph that supports multiple images
 * More [GLGraphicsItems](http://www.pyqtgraph.org/documentation/3dgraphics/glgraphicsitem.html)
 
-See pyqtgraph_extensions/examples for some examples.
+See `pyqtgraph_extensions/examples` for some examples.
 
+# Dependencies
 
-## (Notes to self) How to make it work on raspberry pi
+[PyQtGraph](http://www.pyqtgraph.org/)
 
-```
-sudo apt-get install libblas-dev
-sudo apt-get install liblapack-dev
-sudo apt-get install python-dev
-sudo apt-get install libatlas-base-dev
-sudo apt-get install gfortran
-sudo apt-get install python-setuptools
-sudo easy_install scipy
-```
+TODO scipy? mathx?
+
+## Test environment
+
+`tox` and `tox-conda`

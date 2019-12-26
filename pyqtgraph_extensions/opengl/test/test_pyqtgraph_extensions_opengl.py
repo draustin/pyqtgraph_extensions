@@ -2,7 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph_extensions.opengl as pglx
 
-def test_GLViewWidget():
+def test_GLViewWidget(qtbot):
     view=pglx.GLViewWidget(title='test_GLViewWidget')
     ai=pglx.GLAxisItem()
     view.addItem(ai)
@@ -10,7 +10,7 @@ def test_GLViewWidget():
     view._repr_png_()
     return view
     
-def test_text():
+def test_text(qtbot):
     view=pglx.GLViewWidget(title={'string':'test_text','color':(1,0,0),'font':pg.QtGui.QFont('',20)})
     for n in range(10):
         ti=pglx.GLTextItem(str(n),np.random.random(3),np.random.random(3))
@@ -18,7 +18,7 @@ def test_text():
     view.show()
     return view
     
-def test_box():
+def test_box(qtbot):
     ##
     view=pglx.GLViewWidget()
     view.setTitle(string='test_box',color=(0,0,1))
@@ -33,4 +33,4 @@ def test_box():
     ##
     return view
     
-ret_vals=[fun() for fun in (test_GLViewWidget,test_text,test_box)]
+#ret_vals=[fun() for fun in (test_GLViewWidget,test_text,test_box)]
