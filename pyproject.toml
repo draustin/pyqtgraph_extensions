@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "pyqtgraph_extensions"
-version = "0.5.0"
+version = "0.5.1"
 description = "Various extensions for pyqtgraph."
 authors = ["Dane Austin <dane_austin@fastmail.com.au>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/draustin/pyqtgraph_extensions"
+packages = [
+    { include = "pyqtgraph_extended" },
+    { include = "pyqtgraph_extensions" },
+    { include = "pyqtgraph_recipes" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"

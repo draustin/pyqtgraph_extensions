@@ -22,6 +22,10 @@ To get latest release from PyPi: `pip install pyqtgraph_extensions`.
 
 Or install from GitHub: `pip install git+https://github.com/draustin/pyqtgraph_extensions`.
 
+pyqtgraph_extensions is packaged using [Poetry](https://python-poetry.org/).
+
+Python 3.6 or later is required.
+
 ## Features
 
 See [`pyqtgraph_extensions/examples`](pyqtgraph_extensions/examples) for some examples.
@@ -48,20 +52,9 @@ The `AlignedPlotItem` is so-called because it uses its parent's graphics layout 
 * Easy adding of a second vertical axis on the right hand side (with linked x axis), likewise for a second horizontal axis on the top. See [example](pyqtgraph_extensions/examples/demo_right_top_axes.py).
 * More [GLGraphicsItems](http://www.pyqtgraph.org/documentation/3dgraphics/glgraphicsitem.html) - see the [unit tests](pyqtgraph_extensions/opengl/test/test_pyqtgraph_extensions_opengl.py).
 
-## Dependencies & compatibility
+## Testing
 
-Required:
-* Python >= 3.5.
-* [PyQtGraph](http://www.pyqtgraph.org/) installed from [conda](https://anaconda.org/anaconda/pyqtgraph) or  [PyPi](https://pypi.org/project/pyqtgraph/).
-* [SciPy](https://www.scipy.org/).
-
-Optional:
-* [mathx](https://github.com/draustin/mathx)  - required (the polar plots in) for [`pyqtgraph_recipes`](pyqtgraph_recipes).
-
-## Test environment
-
-* `tox` with `tox-conda`
-* `pytest` with `pytest-qt`
+I use `pytest` with `pytest-qt` during development work and `tox` to test installation & dependencies.
 
 ## Plan / outlook
 
