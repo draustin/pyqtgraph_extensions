@@ -216,7 +216,12 @@ def test_PlotWindow(qtbot):
 
 
 def test_cornertext(qtbot):
-    plt = pg.plot([1, 2, 3], [1, 4, 9])
+    # After upgrade to pyqtgraph 0.11.0, pg.plot here caused error in teardown
+    # File "/Users/dane/git/pyqtgraph_extensions/.tox/py38/lib/python3.8/site-packages/pyqtgraph/widgets/PlotWidget.py", line 71, in close
+    #     self.plotItem.close()
+    # AttributeError: 'NoneType' object has no attribute 'close'
+    # So changed to pgx.
+    plt = pgx.plot([1, 2, 3], [1, 4, 9])
     pgx.cornertext('(top left, default)', plt)
     pgx.cornertext('(top right, red)', plt, (1, 0), color='r')
     pgx.cornertext('(bottom right, bold italic)', plt, (1, 1), bold=True, italic=True)

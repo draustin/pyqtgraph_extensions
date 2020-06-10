@@ -19,7 +19,7 @@ class AxisItem(pg.AxisItem):
     
     def __init__(self, orientation, pen=None, linkView=None, parent=None, maxTickLength=-5, showValues=True):
         # Note - development branch of pyqtgraph adds extra argument textPen here.
-        pg.AxisItem.__init__(self,orientation,pen,linkView,parent,maxTickLength,showValues)
+        pg.AxisItem.__init__(self,orientation,pen,None,linkView,parent,maxTickLength,showValues)
         self.set_lmt_btns=[]
         self.aset_lmt_btns=[]
         path=os.path.dirname(os.path.abspath(__file__))
