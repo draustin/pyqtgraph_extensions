@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyqtgraph_extensions"
-version = "0.5.1"
+version = "0.5.2"
 description = "Various extensions for pyqtgraph."
 authors = ["Dane Austin <dane_austin@fastmail.com.au>"]
 license = "MIT"
@@ -16,8 +16,8 @@ packages = [
 python = "^3.6"
 pyqtgraph = "0.11.0"
 PyQt5 = "^5.14.2"
-mathx = "^0.2.0"
 pyopengl = "^3.1.5"
+mathx = "^0.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.4.2"
