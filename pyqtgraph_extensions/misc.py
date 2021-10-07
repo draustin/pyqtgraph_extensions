@@ -281,8 +281,8 @@ class ColorBarItem(pg.GraphicsWidget):
             image_data=image.image
             if image_data is None:
                 return
-            self.images_min[image]=image_data.min()
-            self.images_max[image]=image_data.max()
+            self.images_min[image]=np.nanmin(image_data)
+            self.images_max[image]=np.nanmax(image_data)
         self.image_min=min(self.images_min.values())
         self.image_max=max(self.images_max.values())
         # Set spatial extent of bar to range of image
