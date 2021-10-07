@@ -1,5 +1,6 @@
 import os,logging,time
 import pyqtgraph as pg
+import pyqtgraph.icons as icons
 from pyqtgraph import QtCore,QtGui
 from functools import partial
 
@@ -33,7 +34,7 @@ class AxisItem(pg.AxisItem):
             btn.clicked.connect(partial(self.set_lmt_btn_clicked,type)) # late binding if function used
             self.set_lmt_btns.append(btn)
             # autoset limit button
-            btn=pg.ButtonItem(pg.pixmaps.getPixmap('auto'), 14,self)
+            btn=pg.ButtonItem(icons.getGraphPixmap('auto'), 14,self)
             btn.setZValue(-1000)
             btn.setFlag(btn.ItemNegativeZStacksBehindParent)
             btn.clicked.connect(partial(self.aset_lmt_btn_clicked,type)) # late binding if function used

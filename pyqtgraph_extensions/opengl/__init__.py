@@ -31,7 +31,7 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
             font_metrics=pg.QtGui.QFontMetrics(self.title['font'])
             self.title['width']=font_metrics.width(self.title['string'])
             self.title['height']=font_metrics.height()
-        self.updateGL()
+        self.update()
     def sizeHint(self):
         return QtCore.QSize(*self.size_hint)
     def paintGL(self, region=None, viewport=None, useItemNames=False):
@@ -66,6 +66,16 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
         
         # Get frame buffer as image and write it to a buffer
         return self.grabFrameBuffer()
+
+    def renderText(self, x, y, z, text, font: QtGui.QFont=None):
+        # TODO when pyqtgraph.GLViewWidget switched its base from QGLWidget to QOpenGLWidget, we lost rendertext.
+        # see https://nils.schimmelmann.us/post/134971073937/migrating-from-qglwidget-to-qopenglwidget for
+        # possible replacement
+        ...
+
+    def grabFrameBuffer(self):
+        # TODO lost when pyqtgraph.GLViewWidget switched its base from QGLWidget to QOpenGLWidget, we lost rendertext.
+        return QtGui.QImage()
 
 class GLAxisItem(pgl.GLAxisItem):
     """Replacement GLAxisItem with extra features.
