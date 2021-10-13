@@ -371,6 +371,9 @@ class Qtbot:
 from .GraphicsLayout import *
 from .functions import *
 
+def get_pyinstaller_hook_dirs():
+    return os.path.dirname(os.path.abspath(__file__))
+
 # somehow these cause crashing when exiting...
 # def make_application():
 #     global application
