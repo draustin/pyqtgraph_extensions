@@ -18,7 +18,7 @@ z[3, :] = np.nan
 im.setImage(z)
 plt.addItem(im)
 cb = pgx.ColorBarItem(image=im)
-#cb.setManual(lut=im.lut, levels=im.levels)
+# cb.setManual(lut=im.lut, levels=im.levels)
 # cb.setLabel('intensity')
 glw.addItem(cb)
 glw.show()

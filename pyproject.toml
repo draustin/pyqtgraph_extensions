@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyqtgraph_extensions"
-version = "0.5.7"
+version = "0.5.8"
 description = "Various extensions for pyqtgraph."
 authors = ["Dane Austin <dane_austin@fastmail.com.au>"]
 license = "MIT"

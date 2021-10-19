@@ -173,7 +173,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pyqtgraph"
-version = "0.12.2"
+version = "0.12.3"
 description = "Scientific Graphics and GUI Library for Python"
 category = "main"
 optional = false
@@ -419,8 +419,8 @@ pyqt5-sip = [
     {file = "PyQt5_sip-12.9.0.tar.gz", hash = "sha256:d3e4489d7c2b0ece9d203ae66e573939f7f60d4d29e089c9f11daa17cfeaae32"},
 ]
 pyqtgraph = [
-    {file = "pyqtgraph-0.12.2-py3-none-any.whl", hash = "sha256:151f2616c75353fdfffa9915ad37b9391af86e5d42ec1e99cb1d1b3062e6353e"},
-    {file = "pyqtgraph-0.12.2.tar.gz", hash = "sha256:fd0cf0678267b65ec28fb4908a7393424978a8c4b369e5749daf8861478fa4ca"},
+    {file = "pyqtgraph-0.12.3-py3-none-any.whl", hash = "sha256:06997eaae40bfa2b870647f98384a63b12f75118303b674337a080f8eb9a0030"},
+    {file = "pyqtgraph-0.12.3.tar.gz", hash = "sha256:f1dfee710fa5e9abaaf3d4dff0116659e6c7b4e7b514870c5cddad268a753d74"},
 ]
 pytest = [
     {file = "pytest-5.4.3-py3-none-any.whl", hash = "sha256:5c0db86b698e8f170ba4582a492248919255fcd4c79b1ee64ace34301fb589a1"},
