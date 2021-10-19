@@ -2,7 +2,6 @@ import pyqtgraph as pg
 from pyqtgraph import QtGui,QtCore
 import pyqtgraph.opengl as pgl
 from OpenGL.GL import *
-from pyqtgraph.python2_3 import *
 import numpy as np
 from .. import IPythonPNGRepr
 
@@ -15,7 +14,7 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
         if title is None:
             title={}
         self.title={'string':None,'color':(1,1,1),'font':pg.QtGui.QApplication.font()}
-        if isinstance(title,basestring):
+        if isinstance(title,str):
             self.title['string']=title
         else:
             self.title.update(title)

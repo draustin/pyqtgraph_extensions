@@ -2,7 +2,6 @@ import pyqtgraph as pg
 from pyqtgraph import QtCore,QtGui
 from . import AxisItem
 from .misc import LegendItem,ImageItem
-from pyqtgraph.python2_3 import basestring
 
 class AlignedPlot(QtCore.QObject):
     sigRangeChanged = QtCore.Signal(object, object)    ## Emitted when the ViewBox range has changed
@@ -73,7 +72,7 @@ class AlignedPlot(QtCore.QObject):
                 labels[label] = kargs[label]
                 del kargs[label]
         for k in labels:
-            if isinstance(labels[k], basestring):
+            if isinstance(labels[k], str):
                 labels[k] = (labels[k],)
             self.setLabel(k, *labels[k])
                 
