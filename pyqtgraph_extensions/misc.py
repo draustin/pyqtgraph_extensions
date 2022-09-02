@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.functions as fn
-from pyqtgraph import QtCore, QtGui
+from pyqtgraph import QtCore, QtGui, QtWidgets
 
 from . import AxisItem
 
@@ -216,7 +216,7 @@ class ColorBarItem(pg.GraphicsWidget):
             images = (image,)
         images = tuple(images)
         # Setup layout
-        self.layout = QtGui.QGraphicsGridLayout()
+        self.layout = QtWidgets.QGraphicsGridLayout()
         self.layout.setHorizontalSpacing(0)
         self.layout.setVerticalSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -354,32 +354,32 @@ class ColorBarItem(pg.GraphicsWidget):
                 image.setLevels(self.axis.range)
 
 
-class PlotWindow(pg.PlotWindow):
-    """Adds some features to PlotWindow class."""
+# class PlotWindow(pg.PlotWindow):
+#     """Adds some features to PlotWindow class."""
 
-    # def __init__(self,**kwargs):
-    #     pg.PlotWindow.__init__(self,**kwargs)
-    #     # adjust_widget(self,**kwargs) - no, it already sets window title to title
+#     # def __init__(self,**kwargs):
+#     #     pg.PlotWindow.__init__(self,**kwargs)
+#     #     # adjust_widget(self,**kwargs) - no, it already sets window title to title
 
-    def _repr_png_(self):
-        """Generate png representation for ipython notebook.
+#     def _repr_png_(self):
+#         """Generate png representation for ipython notebook.
         
-        Thanks to
-        https://groups.google.com/forum/#!msg/pyqtgraph/Nu921kIkeFk/tmvn-BR_BQ0J
-        """
-        # Need to keep a reference to the image, otherwise Qt segfaults
-        self._repr_png_image = QtGui.QImage(self.size(),
-                                            QtGui.QImage.Format_RGB32)
-        painter = QtGui.QPainter(self._repr_png_image)
-        self.render(painter)
+#         Thanks to
+#         https://groups.google.com/forum/#!msg/pyqtgraph/Nu921kIkeFk/tmvn-BR_BQ0J
+#         """
+#         # Need to keep a reference to the image, otherwise Qt segfaults
+#         self._repr_png_image = QtGui.QImage(self.size(),
+#                                             QtGui.QImage.Format_RGB32)
+#         painter = QtGui.QPainter(self._repr_png_image)
+#         self.render(painter)
 
-        byte_array = QtCore.QByteArray()
-        buffer = QtCore.QBuffer(byte_array)
-        buffer.open(QtCore.QIODevice.ReadWrite)
-        self._repr_png_image.save(buffer, 'PNG')
-        buffer.close()
+#         byte_array = QtCore.QByteArray()
+#         buffer = QtCore.QBuffer(byte_array)
+#         buffer.open(QtCore.QIODevice.ReadWrite)
+#         self._repr_png_image.save(buffer, 'PNG')
+#         buffer.close()
 
-        return bytes(byte_array)
+#         return bytes(byte_array)
 
 
 class RectROI(pg.RectROI):
