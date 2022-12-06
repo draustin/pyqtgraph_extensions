@@ -5,7 +5,7 @@ from functools import partial
 
 import pyqtgraph as pg
 import pyqtgraph.icons as icons
-from pyqtgraph import QtCore, QtGui
+from pyqtgraph import QtCore, QtGui, QtWidgets
 
 logger = logging.getLogger(__name__)
 
@@ -153,7 +153,7 @@ class AxisItem(pg.AxisItem):
     def set_lmt_btn_clicked(self, type):
         # TODO bug here - sometimes the dialog doesn't show the right range
         logger.debug('range[type]=%s', self.range[type])
-        value, ok = QtGui.QInputDialog.getDouble(self.parent(), self.label.toPlainText(),
+        value, ok = QtWidgets.QInputDialog.getDouble(self.parent(), self.label.toPlainText(),
                                                  ('Lower', 'Upper')[type] + ' limit:', self.range[type], decimals=3)
         if ok:
             self.set_view_range(type, value)

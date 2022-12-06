@@ -13,7 +13,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 # 2021-10-07 trouble getting poetry to believe that pyqtgraph_extensions was compatible with pyqtgraph pyqtgraph 0.12.
 # Might be caused by case of caret https://nodesource.com/blog/semver-tilde-and-caret/.
 pyqtgraph = ">=0.11"
