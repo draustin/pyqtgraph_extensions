@@ -1,5 +1,5 @@
 import pyqtgraph as pg
-from pyqtgraph import QtGui
+from pyqtgraph import QtGui, QtWidgets
 
 from . import AlignedPlot, ColorBarItem, adjust_widget, IPythonPNGRepr
 
@@ -49,7 +49,9 @@ class GraphicsLayout(pg.GraphicsLayout):
         self.addItem(layout, row, col, rowspan, colspan)
         return layout
 
-    def addColorBar(self, row=None, rel_row=None, col=None, rowspan=1, colspan=1, **kwargs):
+    def addColorBar(
+        self, row=None, rel_row=None, col=None, rowspan=1, colspan=1, **kwargs
+    ):
         cbar = ColorBarItem(self, **kwargs)
         if rel_row is None:
             rel_row = 0
@@ -102,17 +104,39 @@ class GraphicsLayoutWidget(pg.GraphicsView, IPythonPNGRepr):
         pg.GraphicsView.__init__(self, parent)
         kwargs = adjust_widget(self, **kwargs)
         self.ci = GraphicsLayout(**kwargs)
-        for n in ['nextRow', 'nextCol', 'nextColumn', 'addPlot', 'addViewBox', 'addItem', 'getItem', 'addLayout',
-                  'addLabel',
-                  'removeItem', 'itemIndex', 'addAlignedPlot', 'nextRows', 'nextCols', 'addColorBar', 'nextRows',
-                  'addHorizontalSpacer', 'addVerticalSpacer', 'setRowStretchFactor', 'setColumnStretchFactor']:
+        for n in [
+            "nextRow",
+            "nextCol",
+            "nextColumn",
+            "addPlot",
+            "addViewBox",
+            "addItem",
+            "getItem",
+            "addLayout",
+            "addLabel",
+            "removeItem",
+            "itemIndex",
+            "addAlignedPlot",
+            "nextRows",
+            "nextCols",
+            "addColorBar",
+            "nextRows",
+            "addHorizontalSpacer",
+            "addVerticalSpacer",
+            "setRowStretchFactor",
+            "setColumnStretchFactor",
+        ]:
             setattr(self, n, getattr(self.ci, n))
         self.setCentralItem(self.ci)
 
     def clear(self):
         self.ci.clear()
         # Remove additional top-level items in scene
-        items = [item for item in self.scene().items() if item is not self.ci and item.parentItem() is None]
+        items = [
+            item
+            for item in self.scene().items()
+            if item is not self.ci and item.parentItem() is None
+        ]
         for item in items:
             self.scene().removeItem(item)
 
@@ -120,10 +144,9 @@ class GraphicsLayoutWidget(pg.GraphicsView, IPythonPNGRepr):
         # put this in in the hope that it would apply the layout resizing
         # before converting to PNG. It still doesn't. So in notebook, have to
         # use separate cells
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         # Need to keep a reference to the image, otherwise Qt segfaults
-        image = QtGui.QImage(self.viewRect().size().toSize(),
-                             QtGui.QImage.Format_RGB32)
+        image = QtGui.QImage(self.viewRect().size().toSize(), QtGui.QImage.Format_RGB32)
         painter = QtGui.QPainter(image)
         self.render(painter)
         return image

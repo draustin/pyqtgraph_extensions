@@ -6,8 +6,8 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 import pyqtgraph_extensions as pgx
 
-if QtGui.QApplication.instance() is None:
-    qapp=QtGui.QApplication(sys.argv)
+if QtWidgets.QApplication.instance() is None:
+    qapp=QtWidgets.QApplication(sys.argv)
 else:
     # Presumably running in a GUI with event QApplication already created
     qapp=None

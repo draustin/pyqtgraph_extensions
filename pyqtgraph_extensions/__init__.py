@@ -2,7 +2,7 @@
 """
 import os,sys
 import pyqtgraph as pg
-from pyqtgraph import QtGui,QtCore
+from pyqtgraph import QtGui,QtCore,QtWidgets
 import pyqtgraph.exporters as pgex
 from scipy.interpolate import interp1d
 from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
@@ -43,16 +43,16 @@ def set_font(name='Sans Serif',size=6):
     
     Greek letters in PDF export on Windows look shite - tried this but didn't fix it 
     
-    if QtGui.QApplication.font().family()=="MS Shell Dlg 2":
-        QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
+    if QtWidgets.QApplication.font().family()=="MS Shell Dlg 2":
+        QtWidgets.QApplication.setFont(pg.QtGui.QFont('Sans Serif'))
     
     Found that:
-        pg.QtGui.QApplication.font().setPointSize(12) 
+        pg.QtWidgets.QApplication.font().setPointSize(12) 
     doesn't work whereas
-        pg.QtGui.QApplication.setFont(pg.QtGui.QFont('Sans Serif',12))
+        pg.QtWidgets.QApplication.setFont(pg.QtGui.QFont('Sans Serif',12))
     does.
     """
-    pg.QtGui.QApplication.setFont(pg.QtGui.QFont(name,pointSize=size))
+    pg.QtWidgets.QApplication.setFont(pg.QtGui.QFont(name,pointSize=size))
 
 # Tableau discrete color schemes
 # https://github.com/jiffyclub/palettable/blob/master/palettable/tableau/tableau.py
@@ -214,11 +214,11 @@ def export(o,filename,fmt='png',mkdir=False,fmt_opts={},exporter_params={}):
         # Ensures resizing is done (and maybe other things - but without this
         # it can be wrong if run in a script
         o.show()
-        pg.QtGui.QApplication.processEvents()
+        pg.QtWidgets.QApplication.processEvents()
         o.repaint() # this is crucial - something about executing code rather than
         # waiting for the user means this doesn't get called and the layout can
         # be wrong
-        pg.QtGui.QApplication.processEvents()
+        pg.QtWidgets.QApplication.processEvents()
         # Passing the QGraphicsScene to the exporter ensures that all items in the
         # scene being exported
         item=o.scene()
@@ -286,39 +286,40 @@ def copy_to_clipboard(o,exporters=[]):
     
 def close_all():
     """Shortcut for QApplication.closeAllWindows."""
-    pg.QtGui.QApplication.closeAllWindows()
-    
-def plot(*args, **kargs):
-    """
-    Create and return a :class:`PlotWindow <pyqtgraph.PlotWindow>` 
-    (this is just a window with :class:`PlotWidget <pyqtgraph.PlotWidget>` inside), plot data in it.
-    Accepts a *title* argument to set the title of the window.
-    All other arguments are used to plot data. (see :func:`PlotItem.plot() <pyqtgraph.PlotItem.plot>`)
-    """
-    pg.mkQApp()
-    #if 'title' in kargs:
-        #w = PlotWindow(title=kargs['title'])
-        #del kargs['title']
-    #else:
-        #w = PlotWindow()
-    #if len(args)+len(kargs) > 0:
-        #w.plot(*args, **kargs)
+    pg.QtWidgets.QApplication.closeAllWindows()
+
+# PlotWindow was removed from Pyqtgraph, so I removed it from pyqtgraph_extensions.
+# def plot(*args, **kargs):
+#     """
+#     Create and return a :class:`PlotWindow <pyqtgraph.PlotWindow>` 
+#     (this is just a window with :class:`PlotWidget <pyqtgraph.PlotWidget>` inside), plot data in it.
+#     Accepts a *title* argument to set the title of the window.
+#     All other arguments are used to plot data. (see :func:`PlotItem.plot() <pyqtgraph.PlotItem.plot>`)
+#     """
+#     pg.mkQApp()
+#     #if 'title' in kargs:
+#         #w = PlotWindow(title=kargs['title'])
+#         #del kargs['title']
+#     #else:
+#         #w = PlotWindow()
+#     #if len(args)+len(kargs) > 0:
+#         #w.plot(*args, **kargs)
         
-    pwArgList = ['title', 'labels', 'name', 'left', 'right', 'top', 'bottom', 'background']
-    pwArgs = {}
-    dataArgs = {}
-    for k in kargs:
-        if k in pwArgList:
-            pwArgs[k] = kargs[k]
-        else:
-            dataArgs[k] = kargs[k]
+#     pwArgList = ['title', 'labels', 'name', 'left', 'right', 'top', 'bottom', 'background']
+#     pwArgs = {}
+#     dataArgs = {}
+#     for k in kargs:
+#         if k in pwArgList:
+#             pwArgs[k] = kargs[k]
+#         else:
+#             dataArgs[k] = kargs[k]
         
-    w = PlotWindow(**pwArgs)
-    if len(args) > 0 or len(dataArgs) > 0:
-        w.plot(*args, **dataArgs)
-    pg.plots.append(w)
-    w.show()
-    return w
+#     w = PlotWindow(**pwArgs)
+#     if len(args) > 0 or len(dataArgs) > 0:
+#         w.plot(*args, **dataArgs)
+#     pg.plots.append(w)
+#     w.show()
+#     return w
         
 def cornertext(text,parent,corner=(0,0),**kwargs):
     """Put text in the corner of a ViewBox (e.g. for labelling subpanels).
@@ -377,8 +378,8 @@ def get_pyinstaller_hook_dirs():
 # somehow these cause crashing when exiting...
 # def make_application():
 #     global application
-#     if QtGui.QApplication.instance() is None:
-#         application=QtGui.QApplication(sys.argv)
+#     if QtWidgets.QApplication.instance() is None:
+#         application=QtWidgets.QApplication(sys.argv)
 #     else:
 #         application=None
 #         

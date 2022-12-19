@@ -33,10 +33,10 @@ def test_in_widget(make):
     for _ in range(10):
         gl=make()
         hb.addWidget(gl)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         hb.removeWidget(gl)
         gl.deleteLater()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
     
     return w
     

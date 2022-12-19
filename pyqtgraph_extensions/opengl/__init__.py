@@ -1,5 +1,5 @@
 import pyqtgraph as pg
-from pyqtgraph import QtGui,QtCore
+from pyqtgraph import QtGui,QtCore,QtWidgets
 import pyqtgraph.opengl as pgl
 from OpenGL.GL import *
 import numpy as np
@@ -10,10 +10,10 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
     def __init__(self,size_hint=(400,400),title=None):
         pgl.GLViewWidget.__init__(self)
         self.size_hint=size_hint
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         if title is None:
             title={}
-        self.title={'string':None,'color':(1,1,1),'font':pg.QtGui.QApplication.font()}
+        self.title={'string':None,'color':(1,1,1),'font':pg.QtWidgets.QApplication.font()}
         if isinstance(title,str):
             self.title['string']=title
         else:
@@ -214,7 +214,7 @@ class GLWireBoxItem(pgl.GLGraphicsItem.GLGraphicsItem):
                             
         glEnd()
         
-class GLContainerWidget(QtGui.QWidget,IPythonPNGRepr):
+class GLContainerWidget(QtWidgets.QWidget,IPythonPNGRepr):
     """Extension of QWidget that can contain QGLWidgets and still export properly."""
     def get_repr_png_image(self):
         # Does non-OpenGL parts nicely, but OpenGL parts aren't rendered correctly
@@ -247,7 +247,7 @@ def export(widget,filename,fmt='png'):
     non-OpenGL parts, and then the grabFrameBuffer method is called on all
     QGLWidget children, with the results overdrawn.
     """
-    QtGui.QApplication.processEvents()
+    QtWidgets.QApplication.processEvents()
     # Save to one format    
     if isinstance(widget,pg.Qt.QtOpenGL.QGLWidget):
         if fmt=='png':

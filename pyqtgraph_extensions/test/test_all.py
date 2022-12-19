@@ -208,11 +208,11 @@ def test_complex_layout(qtbot):
     glw._repr_png_()
     qtbot.addWidget(glw)
 
-
-def test_PlotWindow(qtbot):
-    fig = pgx.plot([1, 2, 3])
-    fig._repr_png_()
-    qtbot.addWidget(fig)
+# PlotWindow was removed from
+# def test_PlotWindow(qtbot):
+#     fig = pgx.plot([1, 2, 3])
+#     fig._repr_png_()
+#     qtbot.addWidget(fig)
 
 
 def test_cornertext(qtbot):
@@ -221,7 +221,8 @@ def test_cornertext(qtbot):
     #     self.plotItem.close()
     # AttributeError: 'NoneType' object has no attribute 'close'
     # So changed to pgx.
-    plt = pgx.plot([1, 2, 3], [1, 4, 9])
+    plt = pg.PlotWidget()
+    plt.plot([1, 2, 3], [1, 4, 9])
     pgx.cornertext('(top left, default)', plt)
     pgx.cornertext('(top right, red)', plt, (1, 0), color='r')
     pgx.cornertext('(bottom right, bold italic)', plt, (1, 1), bold=True, italic=True)
@@ -249,7 +250,7 @@ def test_AnchoredPlotItem(qtbot):
 
 def test_LegendItem(qtbot):
     ##
-    plot = pg.PlotWindow()
+    plot = pg.PlotWidget()
     legend = pgx.addLegend(plot.plotItem)
     plot.plot([1, 2, 3], [1, 2, 3], pen='b', name='up')
     plot.plot([1, 2, 3], [3, 2, 1], pen='r', name='down')
@@ -284,7 +285,7 @@ def test_export(qtbot):
 def test_calc_image_rect():
     assert pgx.calc_image_rect((10, 11)) == QtCore.QRectF(-0.5, -0.5, 11, 10)  ##  # if __name__=="__main__":
 #     if QtCore.QCoreApplication.instance() is None:
-#         app = QtGui.QApplication([])
+#         app = QtWidgets.QApplication([])
 #     #test_all()
 #     #f=test_AnchoredPlotItem()
 #     #f=test_ColorBarItem_auto()

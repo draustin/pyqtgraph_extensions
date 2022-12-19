@@ -41,10 +41,10 @@ def test_plot_polar_image_3(qtbot):
     return fig
     
 def test_plot_radial_grid_lines(qtbot):
-    p1=pg.PlotWindow()
+    p1=pg.PlotWidget()
     pgr.plot_radial_grid_lines(p1,np.arange(0.1,1,0.1))
             
-    p2=pg.PlotWindow()
+    p2=pg.PlotWidget()
     pgr.plot_radial_grid_lines(p2,np.arange(0.1,1,0.1),'r','%.1f')
     return p1,p2
     
