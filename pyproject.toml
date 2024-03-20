@@ -30,7 +30,7 @@ hook-dirs = "pyqtgraph_extensions:get_pyinstaller_hook_dirs"
 
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.12.0"
+black = ">=22.12,<25.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
