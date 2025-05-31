@@ -6,10 +6,19 @@ import pyqtgraph as pg
 import pyqtgraph.functions as fn
 from pyqtgraph import QtCore, QtGui, QtWidgets
 
+
 from . import AxisItem
 
 logger = logging.getLogger(__name__)
 
+# this briges version 0.13 and the future 0.14
+# qt6 requies a paint method
+if pg.__version__.startswith("0.13"):
+    class PlotDataItem(pg.PlotDataItem):
+        def paint(self,*args):
+            ...
+else:
+    from pyqtgraph import PlotDataItem
 
 class IPythonPNGRepr:
     """Class which can represent itself as a PNG in an IPython notebook.
@@ -173,7 +182,7 @@ class ViewBox(pg.ViewBox):
         Add and return a new plot.
         See :func:`PlotDataItem.__init__ <pyqtgraph.PlotDataItem.__init__>` for data arguments
         """
-        item = pg.PlotDataItem(*args, **kargs)
+        item = PlotDataItem(*args, **kargs)
         self.addItem(item)
         return item
 

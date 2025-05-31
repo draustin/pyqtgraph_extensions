@@ -2,7 +2,7 @@ import pyqtgraph as pg
 from pyqtgraph import QtCore
 
 from . import AxisItem
-from .misc import LegendItem, ImageItem
+from .misc import LegendItem, ImageItem, PlotDataItem
 
 
 class AlignedPlot(QtCore.QObject):
@@ -179,7 +179,7 @@ class AlignedPlot(QtCore.QObject):
         if clear:
             self.clear()
 
-        item = pg.PlotDataItem(*args, **kargs)
+        item = PlotDataItem(*args, **kargs)
 
         if params is None:
             params = {}
