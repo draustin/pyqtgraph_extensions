@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyqtgraph_extensions"
-version = "0.5.9"
+version = "0.6.0"
 description = "Various extensions for pyqtgraph."
 authors = ["Dane Austin <dane_austin@fastmail.com.au>"]
 license = "MIT"
@@ -17,13 +17,13 @@ python = "^3.8"
 # 2021-10-07 trouble getting poetry to believe that pyqtgraph_extensions was compatible with pyqtgraph pyqtgraph 0.12.
 # Might be caused by case of caret https://nodesource.com/blog/semver-tilde-and-caret/.
 pyqtgraph = ">=0.11"
-PyQt5 = "^5.14.2"
+PyQt6 = ">5.14.2"
 pyopengl = "^3.1.5"
 mathx = ">=0.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=6.2.5,<7.0.0"
-pytest-qt = "^3.3.0"
+pytest-qt = ">3.3.0"
 
 [tool.poetry.plugins."pyinstaller40"]
 hook-dirs = "pyqtgraph_extensions:get_pyinstaller_hook_dirs"
