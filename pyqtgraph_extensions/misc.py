@@ -28,7 +28,7 @@ class IPythonPNGRepr:
         self._repr_png_image = self.get_repr_png_image()
         byte_array = QtCore.QByteArray()
         buffer = QtCore.QBuffer(byte_array)
-        buffer.open(QtCore.QIODevice.ReadWrite)
+        buffer.open(QtCore.QIODevice.OpenModeFlag.ReadWrite)
         self._repr_png_image.save(buffer, 'PNG')
         buffer.close()
 
@@ -134,8 +134,8 @@ class LegendItem(pg.LegendItem):
     #     #print("-------")
     #     for sample, label in self.items:
     #         height += max(sample.height(), label.height()) + 3
-    #         width = max(width, (sample.sizeHint(QtCore.Qt.MinimumSize, sample.size()).width() +
-    #                             label.sizeHint(QtCore.Qt.MinimumSize, label.size()).width()))
+    #         width = max(width, (sample.sizeHint(QtCore.Qt.SizeHint.MinimumSize, sample.size()).width() +
+    #                             label.sizeHint(QtCore.Qt.SizeHint.MinimumSize, label.size()).width()))
     #         #print(width, height)
     #     #print width, height
     #     self.setGeometry(0, 0, width+25, height)
@@ -152,8 +152,8 @@ class LegendItem(pg.LegendItem):
         width = margins[0]
         for sample, label in self.items:
             height += max(sample.height(), label.height()) + self.layout.verticalSpacing()
-            width = max(width, (sample.sizeHint(QtCore.Qt.MinimumSize, sample.size()).width() +
-                                label.sizeHint(QtCore.Qt.MinimumSize, label.size()).width()))
+            width = max(width, (sample.sizeHint(QtCore.Qt.SizeHint.MinimumSize, sample.size()).width() +
+                                label.sizeHint(QtCore.Qt.SizeHint.MinimumSize, label.size()).width()))
         self.setGeometry(0, 0, width + margins[2], height + margins[3])  # D
 
 

@@ -10,7 +10,7 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
     def __init__(self,size_hint=(400,400),title=None):
         pgl.GLViewWidget.__init__(self)
         self.size_hint=size_hint
-        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         if title is None:
             title={}
         self.title={'string':None,'color':(1,1,1),'font':pg.QtWidgets.QApplication.font()}
@@ -28,7 +28,7 @@ class GLViewWidget(pgl.GLViewWidget,IPythonPNGRepr):
             self.title['font']=font
         if self.title['string'] is not None:
             font_metrics=pg.QtGui.QFontMetrics(self.title['font'])
-            self.title['width']=font_metrics.width(self.title['string'])
+            self.title['width']=font_metrics.horizontalAdvance(self.title['string'])
             self.title['height']=font_metrics.height()
         self.update()
     def sizeHint(self):

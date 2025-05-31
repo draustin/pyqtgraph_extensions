@@ -146,7 +146,7 @@ class GraphicsLayoutWidget(pg.GraphicsView, IPythonPNGRepr):
         # use separate cells
         QtWidgets.QApplication.processEvents()
         # Need to keep a reference to the image, otherwise Qt segfaults
-        image = QtGui.QImage(self.viewRect().size().toSize(), QtGui.QImage.Format_RGB32)
+        image = QtGui.QImage(self.viewRect().size().toSize(), QtGui.QImage.Format.Format_RGB32)
         painter = QtGui.QPainter(image)
         self.render(painter)
         return image

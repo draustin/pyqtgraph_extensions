@@ -50,7 +50,7 @@ class AlignedPlot(QtCore.QObject):
             axis.linkToView(self.vb)
             self.axes[k] = {'item': axis, 'pos': pos}
             axis.setZValue(-1000)
-            axis.setFlag(axis.ItemNegativeZStacksBehindParent)
+            axis.setFlag(axis.GraphicsItemFlag.ItemNegativeZStacksBehindParent)
         # Title
         if create['title']:
             self.titleLabel = pg.LabelItem('')  # size='11pt' - leave size as is
@@ -92,10 +92,10 @@ class AlignedPlot(QtCore.QObject):
         self.layout = layout
         create = self.create
         layout.addItem(self.vb, row=origin[0] + create['title'] + create['top'], col=origin[1] + create['left'])
-        for k, alignment in (('top', pg.QtCore.Qt.AlignBottom),
-                             ('bottom', pg.QtCore.Qt.AlignTop),
-                             ('left', pg.QtCore.Qt.AlignRight),
-                             ('right', pg.QtCore.Qt.AlignLeft)):
+        for k, alignment in (('top', pg.QtCore.Qt.AlignmentFlag.AlignBottom),
+                             ('bottom', pg.QtCore.Qt.AlignmentFlag.AlignTop),
+                             ('left', pg.QtCore.Qt.AlignmentFlag.AlignRight),
+                             ('right', pg.QtCore.Qt.AlignmentFlag.AlignLeft)):
             if not create[k]:
                 continue
             axis = self.axes[k]['item']

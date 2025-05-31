@@ -17,7 +17,7 @@ AlignedPlotItem=AlignedPlot
 
 # Bring line styles into the namespace for convenience
 for v in ('SolidLine','DashLine','DashDotLine','DashDotDotLine','DotLine'):
-    vars()[v]=getattr(QtCore.Qt,v)
+    vars()[v]=getattr(QtCore.Qt.PenStyle,v)
 
 # Switch to using white background and black foreground
 pg.setConfigOption('background', 'w')

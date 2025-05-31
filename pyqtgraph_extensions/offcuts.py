@@ -15,7 +15,7 @@
 #     """
 #     def __init__(self,parent=None):
 #         pg.GraphicsWidget.__init__(self,parent)
-#         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+#         self.setSizePolicy(QtGui.QSizePolicy.SizePolicy.Expanding, QtGui.QSizePolicy.SizePolicy.Expanding)
 #         self.layout = QtGui.QGraphicsGridLayout()
 #         self.layout.setContentsMargins(1,1,1,1)
 #         self.setLayout(self.layout)

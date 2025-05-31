@@ -105,7 +105,7 @@ class ImageWithProjsAligned(ImageWithProjsAlignedPlot):
         self.horz_proj.setData(x, horz_proj, pen=pen)
         self.vert_proj.setData(vert_proj, y, pen=pen)
 
-    def add_buffers(self, num, pen_style=pg.QtCore.Qt.SolidLine):
+    def add_buffers(self, num, pen_style=pg.QtCore.Qt.PenStyle.SolidLine):
         pens = [pg.mkPen(color=col, style=pen_style) for col in ['r', 'g', 'b', 'm', 'c', 'y']]
         ret = []
         for i in range(num):

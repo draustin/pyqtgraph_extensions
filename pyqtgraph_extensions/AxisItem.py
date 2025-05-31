@@ -34,19 +34,19 @@ class AxisItem(pg.AxisItem):
             # set limit button
             btn = pg.ButtonItem(QtGui.QPixmap(os.path.join(path, 'ellipsis.png')), 14, self)
             btn.setZValue(-1000)
-            btn.setFlag(btn.ItemNegativeZStacksBehindParent)
+            btn.setFlag(btn.GraphicsItemFlag.ItemNegativeZStacksBehindParent)
             btn.clicked.connect(partial(self.set_lmt_btn_clicked, type))  # late binding if function used
             self.set_lmt_btns.append(btn)
             # autoset limit button
             btn = pg.ButtonItem(icons.getGraphPixmap('auto'), 14, self)
             btn.setZValue(-1000)
-            btn.setFlag(btn.ItemNegativeZStacksBehindParent)
+            btn.setFlag(btn.GraphicsItemFlag.ItemNegativeZStacksBehindParent)
             btn.clicked.connect(partial(self.aset_lmt_btn_clicked, type))  # late binding if function used
             self.aset_lmt_btns.append(btn)
         # enable autorange button
         btn = pg.ButtonItem(self.autorange_toggle_off_pixmap, 14, self)
         btn.setZValue(-1000)
-        btn.setFlag(btn.ItemNegativeZStacksBehindParent)
+        btn.setFlag(btn.GraphicsItemFlag.ItemNegativeZStacksBehindParent)
         btn.clicked.connect(self.enable_auto_range_btn_clicked)  # late binding if function used
         self.enable_auto_range_btn = btn
         self.mouseHovering = False
